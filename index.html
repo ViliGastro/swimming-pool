@@ -11,9 +11,6 @@
             padding: 0;
             min-height: 100vh;
             background-color: black; /* Čierna farba mimo obrázka */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             font-family: 'Poppins', sans-serif;
             color: white;
             text-align: center;
@@ -21,35 +18,42 @@
 
         .background {
             width: 100%;
-            height: 70%; /* Obrázok pokryje 70% výšky stránky */
+            height: 100vh; /* Obrázok pokrýva celú výšku stránky */
             background-image: url('backgroundswimmingpool.webp'); /* Obrázok na pozadí */
             background-size: contain; /* Udržanie proporcií obrázka */
             background-position: center;
             background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+            position: relative; /* Umožňuje umiestnenie tlačidla nad obrázok */
         }
 
         .button {
-            margin-top: 10px; /* Malá medzera medzi obrázkom a tlačidlom */
+            position: absolute;
+            top: 50%; /* Vertikálne centrovanie */
+            left: 50%; /* Horizontálne centrovanie */
+            transform: translate(-50%, -50%); /* Posunutie na presný stred */
             padding: 15px 40px;
             font-size: 18px;
             font-weight: 600;
-            background-color: transparent;
+            background-color: rgba(0, 0, 0, 0.8);
             color: white;
             border: 2px solid white; /* Biele ohraničenie tlačidla */
             border-radius: 10px; /* Oblé rohy tlačidla */
             cursor: pointer;
             text-transform: uppercase;
             transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); /* Svietiaca aura */
         }
 
         .button:hover {
             background-color: white;
             color: black;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 1); /* Intenzívnejšie svetlo pri prechode myšou */
         }
     </style>
 </head>
 <body>
-    <div class="background"></div>
-    <button class="button" onclick="window.location.href='payment.html';">Kúpiť Vstupenku</button>
+    <div class="background">
+        <button class="button" onclick="window.location.href='payment.html';">Kúpiť Vstupenku</button>
+    </div>
 </body>
 </html>
