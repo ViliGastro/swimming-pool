@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internetová Plaváreň</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -12,9 +13,9 @@
             background-color: black; /* Čierna farba mimo obrázka */
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: white;
             text-align: center;
         }
@@ -29,21 +30,21 @@
         }
 
         .button {
-            margin: 20px;
-            padding: 15px 30px;
-            font-size: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
+            margin-bottom: 50px; /* Tlačidlo posunuté vyššie nad spodný okraj */
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            background-color: transparent;
             color: white;
-            border: none;
-            border-radius: 5px;
+            border: 2px solid white; /* Biele ohraničenie tlačidla */
+            border-radius: 10px; /* Oblé rohy tlačidla */
             cursor: pointer;
             text-transform: uppercase;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
 
         .button:hover {
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: white;
             color: black;
         }
     </style>
