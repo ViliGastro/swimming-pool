@@ -8,19 +8,28 @@
         body {
             margin: 0;
             padding: 0;
-            height: 100vh;
-            background-image: url('backgroundswimmingpool.webp'); /* Obrázok na pozadí */
-            background-size: cover; /* Prispôsobenie obrázka na celú stránku */
-            background-position: center; /* Centrovanie obrázka */
-            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+            min-height: 100vh;
+            background-color: black; /* Čierna farba mimo obrázka */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
             font-family: Arial, sans-serif;
             color: white;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
+
+        .background {
+            flex: 1;
+            width: 100%;
+            background-image: url('backgroundswimmingpool.webp'); /* Obrázok na pozadí */
+            background-size: contain; /* Udržanie proporcií obrázka */
+            background-position: center;
+            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+        }
+
         .button {
+            margin: 20px;
             padding: 15px 30px;
             font-size: 20px;
             background-color: rgba(0, 0, 0, 0.7);
@@ -32,6 +41,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
+
         .button:hover {
             background-color: rgba(255, 255, 255, 0.7);
             color: black;
@@ -39,7 +49,7 @@
     </style>
 </head>
 <body>
-    <h1>Vitajte v Internetovej Plavárni</h1>
+    <div class="background"></div>
     <button class="button" onclick="window.location.href='payment.html';">Kúpiť Vstupenku</button>
 </body>
 </html>
