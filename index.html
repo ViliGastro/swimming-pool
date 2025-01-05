@@ -13,7 +13,6 @@
             background-color: black; /* Čierna farba mimo obrázka */
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
             align-items: center;
             font-family: 'Poppins', sans-serif;
             color: white;
@@ -21,8 +20,8 @@
         }
 
         .background {
-            flex: 1;
             width: 100%;
+            height: 70%; /* Obrázok pokryje 70% výšky stránky */
             background-image: url('backgroundswimmingpool.webp'); /* Obrázok na pozadí */
             background-size: contain; /* Udržanie proporcií obrázka */
             background-position: center;
@@ -30,7 +29,7 @@
         }
 
         .button {
-            margin-bottom: 50px; /* Tlačidlo posunuté vyššie nad spodný okraj */
+            margin-top: 10px; /* Malá medzera medzi obrázkom a tlačidlom */
             padding: 15px 40px;
             font-size: 18px;
             font-weight: 600;
