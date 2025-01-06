@@ -1,39 +1,61 @@
-
 <!DOCTYPE html>
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Platba</title>
+    <title>Platba za Vstupenku</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: url('https://source.unsplash.com/1600x900/?abstract,water') no-repeat center center fixed;
-            background-size: cover;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background-image: url('ticketbackground.webp'); /* Obrázok na pozadí */
+            background-size: cover; /* Obrázok pokrýva celú stránku */
+            background-position: center; /* Centrovanie obrázka */
+            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+            font-family: 'Poppins', sans-serif;
             color: white;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .content {
+            background: rgba(0, 0, 0, 0.7); /* Polopriehľadné pozadie */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Ďakujeme za záujem!</h1>
-    <p>Zaplaťte 3€ za vstupenku:</p>
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-        <input type="hidden" name="cmd" value="_xclick">
-        <input type="hidden" name="business" value="TVOJ_PAYPAL_EMAIL@EXAMPLE.COM">
-        <input type="hidden" name="item_name" value="Vstupenka do Internetovej Plavárne">
-        <input type="hidden" name="amount" value="3.00">
-        <input type="hidden" name="currency_code" value="EUR">
-        <input type="hidden" name="return" value="success.html">
-        <input type="hidden" name="cancel_return" value="cancel.html">
-        <button type="submit" style="padding: 15px 30px; font-size: 20px; background-color: rgba(0, 0, 0, 0.7); color: white; border: none; border-radius: 5px; cursor: pointer;">Zaplať cez PayPal</button>
-    </form>
+    <div class="content">
+        <h1>Platba za Vstupenku</h1>
+        <p>Prosím, pokračujte k platbe kliknutím na tlačidlo nižšie.</p>
+        <a class="button" href="https://www.paypal.com">Pokračovať na PayPal</a>
+    </div>
 </body>
 </html>
