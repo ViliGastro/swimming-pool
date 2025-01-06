@@ -18,8 +18,9 @@
             color: white;
             text-align: center;
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             align-items: center;
+            flex-direction: column;
         }
         .content {
             background: rgba(0, 0, 0, 0.7); /* Polopriehľadné pozadie */
@@ -28,6 +29,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             max-width: 400px;
             text-align: center;
+            margin-bottom: 20px; /* Posunutie obsahu vyššie */
         }
         h1 {
             font-size: 24px;
@@ -35,14 +37,15 @@
         }
         .button-container {
             display: flex;
-            gap: 20px; /* Medzera medzi tlačidlami */
+            gap: 15px; /* Medzera medzi tlačidlami */
             justify-content: center;
+            margin-bottom: 20px; /* Posunutie tlačidiel nižšie */
         }
         .button {
-            width: 150px; /* Rovnaká šírka ako na úvodnej stránke */
-            height: 50px; /* Rovnaká výška ako na úvodnej stránke */
-            padding: 15px 40px;
-            font-size: 14px; /* Rovnaká veľkosť textu */
+            width: 120px; /* Menšia šírka tlačidla */
+            height: 40px; /* Menšia výška tlačidla */
+            padding: 10px 20px;
+            font-size: 12px; /* Menší text */
             font-weight: 600;
             background-color: rgba(0, 0, 0, 0.8); /* Rovnaká farba ako na úvodnej stránke */
             color: white;
@@ -63,10 +66,10 @@
 <body>
     <div class="content">
         <h1>Platba za Vstupenku</h1>
-        <div class="button-container">
-            <a class="button" href="https://www.paypal.com">Pokračovať na PayPal</a>
-            <a class="button" href="zaplatim_zajtra.html">Zaplatím zajtra</a>
-        </div>
+    </div>
+    <div class="button-container">
+        <a class="button" href="https://www.paypal.com">Pokračovať na PayPal</a>
+        <a class="button" href="zaplatim_zajtra.html">Zaplatím zajtra</a>
     </div>
 </body>
 </html>
