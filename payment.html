@@ -10,29 +10,31 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            background-image: url('ticketbackground.webp'); /* Obrázok na pozadí */
-            background-size: cover; /* Obrázok pokrýva celú stránku */
-            background-position: center; /* Centrovanie obrázka */
-            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+            background-color: black; /* Čierna farba mimo obrázka */
             font-family: 'Poppins', sans-serif;
             color: white;
             text-align: center;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-end;
             align-items: center;
         }
 
-        .content {
-            position: absolute;
-            bottom: 20%; /* Posunutie tlačidla nižšie */
-            left: 50%;
-            transform: translateX(-50%);
+        .background {
+            width: 100%;
+            height: 70%; /* Obrázok pokrýva 70% výšky stránky */
+            background-image: url('ticketbackground.webp'); /* Obrázok na pozadí */
+            background-size: contain; /* Udržanie proporcií obrázka */
+            background-position: center; /* Centrovanie obrázka */
+            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
         }
 
         .button {
-            width: 150px; /* Nastavená šírka tlačidla */
-            height: 50px; /* Nastavená výška tlačidla */
-            font-size: 14px; /* Veľkosť textu */
+            margin-top: 20px;
+            padding: 15px 40px;
+            width: 150px; /* Rovnaká šírka ako na úvodnej stránke */
+            height: 50px; /* Rovnaká výška ako na úvodnej stránke */
+            font-size: 14px; /* Rovnaká veľkosť textu */
             font-weight: 600;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
@@ -52,8 +54,7 @@
     </style>
 </head>
 <body>
-    <div class="content">
-        <button class="button" onclick="window.location.href='https://www.paypal.com';">Pokračovať na PayPal</button>
-    </div>
+    <div class="background"></div>
+    <button class="button" onclick="window.location.href='https://www.paypal.com';">Pokračovať na PayPal</button>
 </body>
 </html>
