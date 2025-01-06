@@ -23,14 +23,19 @@
             background-size: contain; /* Udržanie proporcií obrázka */
             background-position: center;
             background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
-            position: relative; /* Umožňuje umiestnenie tlačidla nad obrázok */
+            position: relative; /* Umožňuje umiestnenie tlačidiel nad obrázok */
+        }
+
+        .buttons-container {
+            position: absolute;
+            bottom: 25%; /* Tlačidlá v dolnej štvrtine obrázka */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px; /* Medzera medzi tlačidlami */
         }
 
         .button {
-            position: absolute;
-            top: 50%; /* Vertikálne centrovanie */
-            left: 50%; /* Horizontálne centrovanie */
-            transform: translate(-50%, -50%); /* Posunutie na presný stred */
             padding: 15px 40px;
             font-size: 18px;
             font-weight: 600;
@@ -53,7 +58,10 @@
 </head>
 <body>
     <div class="background">
-        <button class="button" onclick="window.location.href='payment.html';">Kúpiť Vstupenku</button>
+        <div class="buttons-container">
+            <button class="button" onclick="window.location.href='payment.html';">Kúpiť Vstupenku</button>
+            <button class="button" onclick="window.location.href='free.html';">Vstúpiť zdarma</button>
+        </div>
     </div>
 </body>
 </html>
