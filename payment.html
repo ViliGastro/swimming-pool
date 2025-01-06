@@ -10,16 +10,23 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            background-image: url('ticketbackground.webp'); /* Obrázok na pozadí */
-            background-size: cover; /* Obrázok pokrýva celú stránku */
-            background-position: center; /* Centrovanie obrázka */
-            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+            background-color: black; /* Čierna farba mimo obrázka */
             font-family: 'Poppins', sans-serif;
             color: white;
             text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .background {
+            width: 100%;
+            height: 70%; /* Obrázok pokryje 70% výšky stránky */
+            background-image: url('ticketbackground.webp'); /* Obrázok na pozadí */
+            background-size: contain; /* Udržanie proporcií obrázka */
+            background-position: center;
+            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+            position: relative; /* Umožňuje umiestnenie tlačidiel nad obrázok */
         }
 
         .content {
@@ -52,6 +59,7 @@
     </style>
 </head>
 <body>
+    <div class="background"></div>
     <div class="content">
         <button class="button" onclick="window.location.href='https://www.paypal.com';">Pokračovať na PayPal</button>
     </div>
