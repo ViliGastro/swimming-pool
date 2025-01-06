@@ -35,24 +35,28 @@
         }
         .button-container {
             display: flex;
-            gap: 15px; /* Medzera medzi tlačidlami */
+            gap: 20px; /* Medzera medzi tlačidlami */
             justify-content: center;
         }
         .button {
-            display: inline-block;
-            padding: 15px 30px;
-            font-size: 16px;
+            width: 150px; /* Rovnaká šírka ako na úvodnej stránke */
+            height: 50px; /* Rovnaká výška ako na úvodnej stránke */
+            padding: 15px 40px;
+            font-size: 14px; /* Rovnaká veľkosť textu */
             font-weight: 600;
-            background-color: #007bff;
+            background-color: rgba(0, 0, 0, 0.8); /* Rovnaká farba ako na úvodnej stránke */
             color: white;
-            border: none;
-            border-radius: 8px;
+            border: 2px solid white; /* Biele ohraničenie tlačidla */
+            border-radius: 8px; /* Oblé rohy tlačidla */
             cursor: pointer;
             text-transform: uppercase;
             transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Svietiaca aura */
         }
         .button:hover {
-            background-color: #0056b3;
+            background-color: white;
+            color: black;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 1); /* Intenzívnejšie svetlo pri prechode myšou */
         }
     </style>
 </head>
