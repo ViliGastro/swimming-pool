@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zadajte Kód</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: black; /* Čierna farba mimo obrázka */
+            background-image: url('indexbackground.webp'); /* Obrázok na pozadí */
+            background-size: contain; /* Zachovanie proporcií obrázka */
+            background-position: center; /* Centrovanie obrázka */
+            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container {
+            position: absolute;
+            bottom: 20%; /* Rovnaké ako pozícia tlačidiel na úvodnej stránke */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .input-box {
+            width: 200px;
+            height: 40px;
+            font-size: 16px;
+            border: 2px solid white;
+            border-radius: 8px;
+            padding: 5px 10px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            outline: none;
+        }
+        .button {
+            width: 150px;
+            height: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+        .button:hover {
+            background-color: white;
+            color: black;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" class="input-box" id="codeInput" placeholder="Zadajte kód">
+        <button class="button" onclick="checkCode()">Potvrdiť</button>
+    </div>
+
+    <script>
+        function checkCode() {
+            const code = document.getElementById('codeInput').value;
+            if (code === '666') {
+                window.location.href = 'success.html'; // Presmerovanie na success stránku
+            } else {
+                alert('Nesprávny kód, skúste znova.');
+            }
+        }
+    </script>
+</body>
+</html>
