@@ -58,32 +58,41 @@
 
         .icons-container {
             position: absolute;
-            top: 10%;
-            right: 10%;
+            top: 20%; /* Umiestnenie do hornej polovice stránky */
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            gap: 30px;
         }
 
         .icon {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.8);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid white;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         .icon:hover {
             background-color: white;
+            color: black;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 1);
         }
 
         .icon span {
             font-size: 20px;
             font-weight: bold;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .icon:hover span {
             color: black;
         }
 
@@ -115,15 +124,15 @@
 </head>
 <body>
     <div class="background">
-        <div class="buttons-container">
-            <button class="button" onclick="window.location.href='payment.html';">Kúpiť Vstupenku</button>
-            <button class="button" onclick="window.location.href='enter_code.html';">Vstúpiť zdarma</button>
-        </div>
         <div class="icons-container">
             <div class="icon" onclick="showPopup('info')"><span>i</span></div>
             <div class="icon" onclick="showPopup('contact')"><span>@</span></div>
             <div class="icon" onclick="showPopup('help')"><span>?</span></div>
             <div class="icon" onclick="showPopup('rules')"><span>!</span></div>
+        </div>
+        <div class="buttons-container">
+            <button class="button" onclick="window.location.href='payment.html';">Kúpiť Vstupenku</button>
+            <button class="button" onclick="window.location.href='enter_code.html';">Vstúpiť zdarma</button>
         </div>
     </div>
 
