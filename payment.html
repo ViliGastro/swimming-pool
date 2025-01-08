@@ -14,43 +14,42 @@
             font-family: 'Poppins', sans-serif;
             color: white;
             text-align: center;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            flex-direction: column;
         }
+
         .background {
             width: 100%;
-            height: 100vh;
+            height: 100vh; /* Obrázok pokrýva celú výšku stránky */
             background-image: url('ticketbackground.webp'); /* Obrázok na pozadí */
-            background-size: contain;
+            background-size: contain; /* Udržanie proporcií obrázka */
             background-position: center;
-            background-repeat: no-repeat;
+            background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
+            position: relative; /* Umožňuje umiestnenie tlačidiel nad obrázok */
         }
-        .button-container {
+
+        .buttons-container {
+            position: absolute;
+            bottom: 20%; /* Posunutie tlačidiel nižšie */
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             gap: 15px; /* Medzera medzi tlačidlami */
-            justify-content: center;
-            margin-bottom: 50px;
         }
+
         .button {
-            width: 150px;
-            height: 50px;
-            font-size: 14px;
+            width: 150px; /* Nastavená šírka tlačidla */
+            height: 50px; /* Nastavená výška tlačidla */
+            font-size: 14px; /* Veľkosť textu */
             font-weight: 600;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
             border: 2px solid white; /* Biele ohraničenie tlačidla */
-            border-radius: 8px;
+            border-radius: 8px; /* Oblé rohy tlačidla */
             cursor: pointer;
             text-transform: uppercase;
-            text-decoration: none; /* Odstránenie podčiarknutia textu */
             transition: all 0.3s ease;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Svietiaca aura */
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
+
         .button:hover {
             background-color: white;
             color: black;
@@ -60,11 +59,9 @@
 </head>
 <body>
     <div class="background">
-        <div class="button-container">
-            <!-- Tlačidlo "Zaplať PayPal" -->
-            <a class="button" href="https://www.paypal.com/donate/?hosted_button_id=F6XHVXVQ4DWLN" target="_blank">Zaplať PayPal</a>
-            <!-- Tlačidlo "Zaplať Zajtra" -->
-            <a class="button" href="zaplatim_zajtra.html">Zaplať Zajtra</a>
+        <div class="buttons-container">
+            <button class="button" onclick="window.location.href='https://www.paypal.com';">Zaplať PayPal</button>
+            <button class="button" onclick="window.location.href='zaplatim_zajtra.html';">Zaplať zajtra</button>
         </div>
     </div>
 </body>
