@@ -1,29 +1,64 @@
-
 <!DOCTYPE html>
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Členstvo</title>
+    <title>Úspech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: url('https://source.unsplash.com/1600x900/?blue,abstract') no-repeat center center fixed;
-            background-size: cover;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background-color: black;
+            font-family: 'Poppins', sans-serif;
             color: white;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .message-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        .button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: black;
+            background-color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #ddd;
         }
     </style>
 </head>
 <body>
-    <h1>Gratulujeme!</h1>
-    <p>Ste členom našej Internetovej Plavárne. Plávať nemusíte.</p>
+    <div class="message-container">
+        <h1>Gratulujeme!</h1>
+        <p>Úspešne ste zadali kód a teraz máte prístup.</p>
+        <button class="button" onclick="window.location.href='index.html';">Späť na hlavnú stránku</button>
+    </div>
 </body>
 </html>
