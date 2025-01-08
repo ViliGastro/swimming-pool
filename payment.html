@@ -21,7 +21,7 @@
             height: 100vh; /* Obrázok pokrýva celú výšku stránky */
             background-image: url('ticketbackground.webp'); /* Obrázok na pozadí */
             background-size: contain; /* Udržanie proporcií obrázka */
-            background-position: center;
+            background-position: center; /* Centrovanie obrázka */
             background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
             position: relative; /* Umožňuje umiestnenie tlačidiel nad obrázok */
         }
@@ -60,7 +60,9 @@
 <body>
     <div class="background">
         <div class="buttons-container">
-            <button class="button" onclick="window.location.href='https://www.paypal.com';">Zaplať PayPal</button>
+            <!-- Tlačidlo "Zaplať PayPal" -->
+            <button class="button" onclick="window.location.href='https://www.paypal.com/donate/?hosted_button_id=F6XHVXVQ4DWLN';">Zaplať PayPal</button>
+            <!-- Tlačidlo "Zaplať zajtra" -->
             <button class="button" onclick="window.location.href='zaplatim_zajtra.html';">Zaplať zajtra</button>
         </div>
     </div>
