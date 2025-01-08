@@ -58,38 +58,36 @@
 
         .icons-container {
             position: absolute;
-            top: 20%; /* Umiestnenie do hornej polovice stránky */
-            left: 50%;
-            transform: translateX(-50%);
+            top: 20%;
+            left: 5%;
             display: flex;
-            gap: 30px;
+            flex-direction: column; /* Vertikálne rozloženie */
+            gap: 10px;
         }
 
         .icon {
-            width: 50px;
-            height: 50px;
+            width: 25px; /* Polovičná šírka ikon */
+            height: 25px; /* Polovičná výška ikon */
             background-color: rgba(255, 255, 255, 0.1);
             border: 2px solid white;
-            border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
         }
 
         .icon:hover {
             background-color: white;
             color: black;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         .icon span {
-            font-size: 20px;
+            font-size: 12px; /* Menší text */
             font-weight: bold;
             color: white;
-            transition: color 0.3s ease;
         }
 
         .icon:hover span {
