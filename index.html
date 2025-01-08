@@ -21,7 +21,7 @@
             height: 100vh; /* Obrázok pokrýva celú výšku stránky */
             background-image: url('indexbackground.webp'); /* Obrázok na pozadí */
             background-size: contain; /* Udržanie proporcií obrázka */
-            background-position: center;
+            background-position: center; /* Centrovanie obrázka */
             background-repeat: no-repeat; /* Zabraňuje opakovaniu obrázka */
             position: relative; /* Umožňuje umiestnenie tlačidiel nad obrázok */
         }
@@ -59,15 +59,15 @@
         .icons-container {
             position: absolute;
             top: 20%;
-            left: 5%;
+            right: 5%; /* Umiestnenie na pravú stranu */
             display: flex;
             flex-direction: column; /* Vertikálne rozloženie */
-            gap: 10px;
+            gap: 20px; /* Väčšie medzery medzi ikonami */
         }
 
         .icon {
-            width: 25px; /* Polovičná šírka ikon */
-            height: 25px; /* Polovičná výška ikon */
+            width: 20px; /* Menšie šírka ikon */
+            height: 20px; /* Menšia výška ikon */
             background-color: rgba(255, 255, 255, 0.1);
             border: 2px solid white;
             display: flex;
@@ -85,7 +85,7 @@
         }
 
         .icon span {
-            font-size: 12px; /* Menší text */
+            font-size: 10px; /* Menší text */
             font-weight: bold;
             color: white;
         }
