@@ -26,7 +26,7 @@
 
         h1 {
             color: gold;
-            text-shadow: 0 0 10px gold;
+            text-shadow: 0 0 10px gold, 0 0 20px orange;
             margin-bottom: 10px;
         }
 
@@ -40,15 +40,31 @@
 
         .reel {
             width: 100px;
-            height: 100px;
+            height: 300px;
+            overflow: hidden;
             background-color: #111;
             border: 2px solid #333;
             border-radius: 10px;
+            box-shadow: inset 0 0 15px black;
+            position: relative;
+        }
+
+        .symbols {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            animation: none;
+        }
+
+        .symbol {
+            width: 100%;
+            height: 100px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 50px;
-            box-shadow: inset 0 0 15px black;
+            font-size: 40px;
+            color: white;
+            text-shadow: 0 0 10px black;
         }
 
         .controls {
@@ -71,43 +87,86 @@
             background-color: orange;
         }
 
-        .info {
+        .credits, .result {
             font-size: 20px;
             margin: 10px 0;
+            text-shadow: 0 0 5px white;
+        }
+
+        @keyframes spin {
+            from {
+                top: 0;
+            }
+            to {
+                top: -300%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Kajot-Style Automat</h1>
-        <div class="info" id="credits">Kredit: 100</div>
+        <div class="credits" id="credits">Kredit: 100</div>
         <div class="slot-machine">
-            <div class="reel" id="reel1">🍒</div>
-            <div class="reel" id="reel2">🍋</div>
-            <div class="reel" id="reel3">🍇</div>
-            <div class="reel" id="reel4">🍉</div>
-            <div class="reel" id="reel5">⭐</div>
+            <!-- Valce -->
+            <div class="reel" id="reel1">
+                <div class="symbols">
+                    <div class="symbol">🍒</div>
+                    <div class="symbol">🍋</div>
+                    <div class="symbol">🍇</div>
+                    <div class="symbol">🍉</div>
+                    <div class="symbol">⭐</div>
+                </div>
+            </div>
+            <div class="reel" id="reel2">
+                <div class="symbols">
+                    <div class="symbol">🍋</div>
+                    <div class="symbol">🍇</div>
+                    <div class="symbol">🍉</div>
+                    <div class="symbol">⭐</div>
+                    <div class="symbol">🍒</div>
+                </div>
+            </div>
+            <div class="reel" id="reel3">
+                <div class="symbols">
+                    <div class="symbol">🍇</div>
+                    <div class="symbol">🍉</div>
+                    <div class="symbol">⭐</div>
+                    <div class="symbol">🍒</div>
+                    <div class="symbol">🍋</div>
+                </div>
+            </div>
+            <div class="reel" id="reel4">
+                <div class="symbols">
+                    <div class="symbol">🍉</div>
+                    <div class="symbol">⭐</div>
+                    <div class="symbol">🍒</div>
+                    <div class="symbol">🍋</div>
+                    <div class="symbol">🍇</div>
+                </div>
+            </div>
+            <div class="reel" id="reel5">
+                <div class="symbols">
+                    <div class="symbol">⭐</div>
+                    <div class="symbol">🍒</div>
+                    <div class="symbol">🍋</div>
+                    <div class="symbol">🍇</div>
+                    <div class="symbol">🍉</div>
+                </div>
+            </div>
         </div>
         <div class="controls">
             <button class="button" onclick="spin()">Točiť</button>
         </div>
-        <div class="info" id="result">Kliknite na "Točiť" pre začiatok!</div>
+        <div class="result" id="result">Kliknite na "Točiť" pre začiatok!</div>
     </div>
 
     <script>
-        const reels = [
-            document.getElementById('reel1'),
-            document.getElementById('reel2'),
-            document.getElementById('reel3'),
-            document.getElementById('reel4'),
-            document.getElementById('reel5')
-        ];
+        const reels = document.querySelectorAll('.reel');
         const creditsDisplay = document.getElementById('credits');
         const resultDisplay = document.getElementById('result');
 
         let credits = 100;
-
-        const symbols = ['🍒', '🍋', '🍇', '🍉', '⭐']; // Symboly
 
         function spin() {
             if (credits < 10) {
@@ -115,29 +174,41 @@
                 return;
             }
 
-            credits -= 10; // Odpočet kreditov
+            credits -= 10;
             creditsDisplay.textContent = `Kredit: ${credits}`;
-            let results = [];
 
-            reels.forEach((reel) => {
-                const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-                results.push(randomSymbol);
-                reel.textContent = randomSymbol;
+            reels.forEach((reel, index) => {
+                const symbolsContainer = reel.querySelector('.symbols');
+                const randomDuration = Math.random() * 2 + 1; // Trvanie otáčania (1-3 sekundy)
+
+                symbolsContainer.style.animation = `spin ${randomDuration}s cubic-bezier(0.25, 0.1, 0.25, 1) infinite`;
+
+                setTimeout(() => {
+                    symbolsContainer.style.animation = '';
+                    const randomIndex = Math.floor(Math.random() * 5);
+                    symbolsContainer.style.top = `-${randomIndex * 100}px`;
+
+                    if (index === reels.length - 1) {
+                        checkWin();
+                    }
+                }, randomDuration * 1000);
             });
-
-            checkWin(results);
         }
 
-        function checkWin(results) {
-            const firstSymbol = results[0];
-            const isWin = results.every((symbol) => symbol === firstSymbol);
+        function checkWin() {
+            // Jednoduchá výhra na strednej línii
+            const midSymbols = Array.from(reels).map((reel) =>
+                reel.querySelectorAll('.symbol')[2].textContent
+            );
 
-            if (isWin) {
+            if (midSymbols.every((symbol) => symbol === midSymbols[0])) {
                 const winAmount = 50;
                 credits += winAmount;
                 resultDisplay.textContent = `Gratulujeme! Vyhrali ste ${winAmount} kreditov!`;
+                resultDisplay.style.color = 'lime';
             } else {
                 resultDisplay.textContent = 'Skúste to znova.';
+                resultDisplay.style.color = 'red';
             }
 
             creditsDisplay.textContent = `Kredit: ${credits}`;
