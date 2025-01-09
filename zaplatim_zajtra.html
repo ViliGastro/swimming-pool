@@ -31,9 +31,12 @@
 
         .buttons-container {
             position: absolute;
-            bottom: 20%; /* Posunutie tlačidla nižšie */
+            bottom: 20%; /* Posunutie tlačidiel nižšie */
             left: 50%;
             transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Medzera medzi tlačidlami */
         }
 
         .button {
@@ -63,6 +66,8 @@
         <div class="buttons-container">
             <!-- Tlačidlo "Spustiť hru" -->
             <button class="button" onclick="window.location.href='plavaren_hra.html';">Spustiť hru</button>
+            <!-- Tlačidlo "Wild Česo" -->
+            <button class="button" onclick="window.location.href='automat.html';">Wild Česo</button>
         </div>
     </div>
 </body>
