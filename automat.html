@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Čejs 27 – Výherné rady (diagonály, Wild font)</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      text-align: center;
+    }
+
+    .container {
+      width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    h1 {
+      color: #FFD700;
+      font-size: 3em;
+      text-shadow:
+        0 0 10px #FFD700,
+        0 0 20px #FFA500,
+        0 0 30px #FF8C00;
+      margin-bottom: 20px;
+    }
+
+    .slot-machine {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px; /* Minimálna medzera */
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    /* Valce väčšie */
+    .reel {
+      width: 200px;
+      height: 600px; /* 3 symboly po 200px = 600px */
+      overflow: hidden;
+      background-color: #111;
+      border: 3px solid #333;
+      border-radius: 10px;
+      box-shadow: inset 0 0 15px black;
+      position: relative;
+    }
+
+    .symbols {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Symboly dvakrát tak veľké */
+    .symbol {
+      width: 100%;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 80px;
+      color: white;
+      text-shadow: 0 0 10px black;
+      transition: background-color 0.3s;
+    }
+
+    /* Wild s iným fontom */
+    .wildSymbol {
+      font-family: "Brush Script MT", cursive; /* alebo iný dekoratívny font */
+      color: #FF69B4; /* ružovejšia farba, napr. */
+      text-shadow: 
+        0 0 5px #ff69b4,
+        0 0 10px #ff1493;
+      font-weight: bold;
+    }
+
+    /* Zvýraznenie výherných symbolov */
+    .symbol.highlight {
+      background-color: rgba(255, 255, 0, 0.3);
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    button {
+      font-weight: bold;
+      color: #fff;
+      background-color: #ffb300;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(255, 179, 0, 0.7);
+    }
+    button:hover {
+      background-color: #ff8400;
+      box-shadow: 0 0 15px rgba(255, 132, 0, 0.9);
+    }
+
+    .bet-button {
+      font-size: 20px;
+      padding: 10px 20px;
+    }
+    .spin-button {
+      font-size: 24px;
+      padding: 14px 40px;
+    }
+
+    .credits,
+    .result {
+      font-size: 24px;
+      margin: 10px 0;
+      text-shadow: 0 0 5px #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Čejs 27</h1>
+    <div class="credits" id="credits">Kredit: 200</div>
+    <div style="font-size: 20px;">
+      Stávka: <span id="betAmount">10</span> kreditov
+    </div>
+
+    <div class="slot-machine">
+      <div class="reel" id="reel1">
+        <div class="symbols"></div>
+      </div>
+      <div class="reel" id="reel2">
+        <div class="symbols"></div>
+      </div>
+      <div class="reel" id="reel3">
+        <div class="symbols"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="bet-button" onclick="decreaseBet()">-</button>
+      <button class="spin-button" onclick="spin()">TOČIŤ</button>
+      <button class="bet-button" onclick="increaseBet()">+</button>
+    </div>
+
+    <div class="result" id="result">
+      Roztočte valce a skúste šťastie!
+    </div>
+  </div>
+
+  <script>
+    const reels = document.querySelectorAll('.reel');
+    const creditsDisplay = document.getElementById('credits');
+    const betAmountDisplay = document.getElementById('betAmount');
+    const resultDisplay = document.getElementById('result');
+
+    // Začiatočný kredit
+    let credits = 200;
+    let betAmount = 10;
+
+    // Symboly (vrátane "Wild")
+    const allSymbols = ["🍒", "🍋", "🍇", "🍉", "⭐", "Wild"];
+
+    // Pri načítaní stránky vygenerujeme 9 symbolov pre každý valec
+    window.onload = () => {
+      reels.forEach((reel) => {
+        generate9Symbols(reel);
+      });
+    };
+
+    /**
+     * Vygeneruje (resp. vymaže staré a vloží) 9 symbolov do daného valca.
+     * Táto funkcia sa volá pri prvom načítaní (onload).
+     * Pri spin-e však nepoužívame presne túto, ale "prepareReelForSpin".
+     */
+    function generate9Symbols(reel) {
+      const container = reel.querySelector('.symbols');
+      container.innerHTML = "";
+      for (let i = 0; i < 9; i++) {
+        const sym = createRandomSymbolDiv();
+        container.appendChild(sym);
+      }
+    }
+
+    /**
+     * Vytvorí <div class="symbol"> s náhodným symbolom.
+     * Ak je symbol "Wild", použije špeciálny .wildSymbol.
+     */
+    function createRandomSymbolDiv() {
+      const randomSymbol = allSymbols[Math.floor(Math.random() * allSymbols.length)];
+      const div = document.createElement('div');
+      div.classList.add('symbol');
+
+      if (randomSymbol === "Wild") {
+        // Vložíme text s inou triedou
+        div.innerHTML = `<span class="wildSymbol">WILD</span>`;
+      } else {
+        div.textContent = randomSymbol;
+      }
+      return div;
+    }
+
+    /**
+     * Pripraví valec na nové zatočenie:
+     *  - vezme posledné 3 symboly (pozície 6,7,8) a presunie ich na začiatok
+     *  - zvyšných 6 symbolov vymaže
+     *  - vygeneruje 6 nových symbolov
+     */
+    function prepareReelForSpin(reel) {
+      const container = reel.querySelector('.symbols');
+
+      const oldSymbols = Array.from(container.querySelectorAll('.symbol'));
+      // Posledné 3 (tie, ktoré boli viditeľné naposledy)
+      const final3 = oldSymbols.slice(6, 9); 
+
+      // Vymažeme všetko
+      container.innerHTML = "";
+
+      // Najprv do containera vložíme final3 (aktuálne symboly navrchu)
+      final3.forEach(sym => container.appendChild(sym));
+
+      // Potom vygenerujeme 6 nových
+      for (let i = 0; i < 6; i++) {
+        const newSym = createRandomSymbolDiv();
+        container.appendChild(newSym);
+      }
+    }
+
+    function spin() {
+      if (credits < betAmount) {
+        resultDisplay.textContent = 'Nemáte dostatok kreditov!';
+        resultDisplay.style.color = 'red';
+        return;
+      }
+
+      // Odpočítame stávku
+      credits -= betAmount;
+      creditsDisplay.textContent = `Kredit: ${credits}`;
+      resultDisplay.textContent = 'Valce sa točia...';
+      resultDisplay.style.color = 'white';
+
+      // Zrušíme prípadné zvýraznenie starých výhier
+      removeAllHighlights();
+
+      // Každý valec najprv "pripravíme" na nový spin
+      reels.forEach((reel) => {
+        prepareReelForSpin(reel);
+      });
+
+      // Spustíme animáciu na každom valci
+      let completed = 0;
+      reels.forEach((reel) => {
+        spinReelAnimation(reel, () => {
+          completed++;
+          if (completed === reels.length) {
+            // Po dotočení všetkých valcov -> vyhodnotíme výhru
+            checkWin();
+          }
+        });
+      });
+    }
+
+    /**
+     * Animácia točenia (3 sekundy).
+     * Posun: 0 -> -1200 px (6 symbolov * 200 px = 1200)
+     */
+    function spinReelAnimation(reel, onComplete) {
+      const symbolsContainer = reel.querySelector('.symbols');
+      const startTime = performance.now();
+      const duration = 3000; 
+      const maxOffset = 1200; 
+
+      function animate(time) {
+        let elapsed = time - startTime;
+        if (elapsed > duration) elapsed = duration;
+
+        const progress = elapsed / duration;
+        const eased = easeInOutQuad(progress);
+        const currentOffset = -maxOffset * eased;
+        symbolsContainer.style.transform = `translateY(${currentOffset}px)`;
+
+        if (elapsed < duration) {
+          requestAnimationFrame(animate);
+        } else {
+          // Zastavíme na -1200 px
+          symbolsContainer.style.transform = `translateY(${-maxOffset}px)`;
+          onComplete && onComplete();
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    // Jednoduchý easeInOut
+    function easeInOutQuad(t) {
+      return t < 0.5
+        ? 2 * t * t
+        : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    /**
+     * Vyhodnotenie výhry zahŕňa:
+     * - 3 horizontálne línie (0,1,2)
+     * - 2 diagonálne línie ([0,0],[1,1],[2,2]) a ([0,2],[1,1],[2,0])
+     */
+    function checkWin() {
+      // Finálne 3 symboly na každom valci (indexy 6,7,8)
+      const reelSymbols = [];
+      reels.forEach((reel) => {
+        const syms = reel.querySelectorAll('.symbol');
+        reelSymbols.push([
+          syms[6],
+          syms[7],
+          syms[8],
+        ]);
+      });
+
+      let totalMultiplier = 0;
+
+      // 3 horizontálne línie
+      for (let row = 0; row < 3; row++) {
+        const s1 = reelSymbols[0][row];
+        const s2 = reelSymbols[1][row];
+        const s3 = reelSymbols[2][row];
+        
+        const lineMultiplier = checkLineAndGetMultiplier(s1, s2, s3);
+        totalMultiplier += lineMultiplier;
+      }
+
+      // Diagonála 1 (zľava hore -> doprava dole)
+      {
+        const s1 = reelSymbols[0][0];
+        const s2 = reelSymbols[1][1];
+        const s3 = reelSymbols[2][2];
+        totalMultiplier += checkLineAndGetMultiplier(s1, s2, s3);
+      }
+
+      // Diagonála 2 (zľava dole -> doprava hore)
+      {
+        const s1 = reelSymbols[0][2];
+        const s2 = reelSymbols[1][1];
+        const s3 = reelSymbols[2][0];
+        totalMultiplier += checkLineAndGetMultiplier(s1, s2, s3);
+      }
+
+      if (totalMultiplier > 0) {
+        const winAmount = betAmount * totalMultiplier;
+        credits += winAmount;
+        creditsDisplay.textContent = `Kredit: ${credits}`;
+        resultDisplay.textContent = `Vyhrali ste ${winAmount} kreditov!`;
+        resultDisplay.style.color = 'lime';
+      } else {
+        resultDisplay.textContent = `Žiadna výhra, skúste to znova.`;
+        resultDisplay.style.color = 'red';
+      }
+    }
+
+    /**
+     * checkLineAndGetMultiplier:
+     * - ak sú symboly v línii rovnaké alebo "Wild" (žolík), základ je 2× stávka,
+     * - každý Wild v danom riadku navyšuje násobok ×2,
+     * - zvýrazní výherné symboly triedou .highlight.
+     */
+    function checkLineAndGetMultiplier(el1, el2, el3) {
+      const s1 = getSymbolText(el1);
+      const s2 = getSymbolText(el2);
+      const s3 = getSymbolText(el3);
+
+      const distinctNonWild = new Set(
+        [s1, s2, s3].filter(sym => sym !== 'Wild')
+      );
+
+      // Ak je size <= 1, znamená to, že buď sú všetky rovnaké, alebo to doplnia Wildy
+      if (distinctNonWild.size <= 1) {
+        let rowMultiplier = 2;
+
+        // Každý Wild navyšuje ×2
+        const wildCount = [s1, s2, s3].filter(x => x === 'Wild').length;
+        rowMultiplier *= Math.pow(2, wildCount);
+
+        // Zvýrazníme
+        el1.classList.add('highlight');
+        el2.classList.add('highlight');
+        el3.classList.add('highlight');
+
+        return rowMultiplier;
+      }
+      return 0;
+    }
+
+    /**
+     * getSymbolText(el): ak má <span class="wildSymbol">WILD</span>,
+     * vrátime "Wild". Inak vrátime textContent (napr. "🍒").
+     */
+    function getSymbolText(el) {
+      // Ak je vnútri <span class="wildSymbol">, tak je to "Wild"
+      const span = el.querySelector('.wildSymbol');
+      if (span) return 'Wild';
+      return el.textContent.trim();
+    }
+
+    /** Zrušíme zvýraznenie všetkých symbolov. */
+    function removeAllHighlights() {
+      reels.forEach((reel) => {
+        reel.querySelectorAll('.symbol').forEach(sym => {
+          sym.classList.remove('highlight');
+        });
+      });
+    }
+
+    // Zvýšenie / Zníženie stávky
+    function increaseBet() {
+      betAmount += 10;
+      betAmountDisplay.textContent = betAmount;
+    }
+
+    function decreaseBet() {
+      if (betAmount > 10) {
+        betAmount -= 10;
+        betAmountDisplay.textContent = betAmount;
+      }
+    }
+  </script>
+</body>
+</html>
