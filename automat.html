@@ -3,47 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Výherný Automat - Ovocie 81</title>
+    <title>Automat - Ovocie 81</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             background-color: black;
-            color: white;
             font-family: Arial, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 400px;
             text-align: center;
+            background-color: #333;
+            border: 3px solid #aaa;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
         }
 
         h1 {
-            margin-top: 20px;
+            color: gold;
+            text-shadow: 0 0 10px gold;
         }
 
-        .machine {
-            margin: 20px auto;
-            width: 320px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        .slot-machine {
+            display: flex;
             justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
         }
 
-        .slot {
-            width: 70px;
-            height: 70px;
-            background-color: #222;
-            border: 2px solid white;
+        .reel {
+            width: 80px;
+            height: 80px;
+            background-color: #111;
+            border: 2px solid #fff;
             border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
-            color: yellow;
-            font-weight: bold;
+            overflow: hidden;
+            font-size: 40px;
+            position: relative;
             animation: none;
-        }
-
-        .slot.spin {
-            animation: spin 0.5s ease-in-out;
         }
 
         @keyframes spin {
@@ -53,16 +62,15 @@
         }
 
         .controls {
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
         .button {
             padding: 10px 20px;
-            margin: 10px;
             font-size: 16px;
             font-weight: bold;
             color: white;
-            background-color: #333;
+            background-color: #555;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -70,48 +78,55 @@
         }
 
         .button:hover {
-            background-color: #555;
+            background-color: #777;
         }
 
-        .result, .credits {
-            margin-top: 20px;
+        .credits {
             font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .result {
+            font-size: 18px;
             font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Výherný Automat - Ovocie 81</h1>
-    <div class="credits" id="credits">Kredit: 0</div>
-    <div class="machine" id="machine">
-        <div class="slot">🍒</div>
-        <div class="slot">🍋</div>
-        <div class="slot">🍇</div>
-        <div class="slot">🍉</div>
+    <div class="container">
+        <h1>Automat - Ovocie 81</h1>
+        <div class="credits" id="credits">Kredit: 0</div>
+        <div class="slot-machine">
+            <div class="reel" id="reel1">🍒</div>
+            <div class="reel" id="reel2">🍋</div>
+            <div class="reel" id="reel3">🍇</div>
+            <div class="reel" id="reel4">🍉</div>
+        </div>
+        <div class="controls">
+            <button class="button" onclick="spin()">Točiť</button>
+        </div>
+        <div class="result" id="result">Kliknite na "Točiť" pre začiatok!</div>
     </div>
-    <div class="controls">
-        <button class="button" onclick="spin()">Točiť</button>
-    </div>
-    <div class="result" id="result">Kliknite na "Točiť" pre začiatok!</div>
 
     <script>
-        const slots = document.querySelectorAll('.slot');
-        const result = document.getElementById('result');
+        const reels = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3'), document.getElementById('reel4')];
+        const resultDisplay = document.getElementById('result');
         const creditsDisplay = document.getElementById('credits');
 
-        // Ovocné symboly s výškou výhry
+        // Symboly s hodnotami výhier
         const symbols = [
             { symbol: '🍒', value: 10 },
             { symbol: '🍋', value: 20 },
             { symbol: '🍇', value: 30 },
             { symbol: '🍉', value: 50 },
-            { symbol: '🚴', value: 100 } // Symbol Wild - cyklista
+            { symbol: '🚴', value: 100 } // Wild symbol
         ];
 
         let credits = 0;
 
         function spin() {
-            let spinResult = [];
+            let results = [];
             let isWin = true;
             let winValue = 0;
 
@@ -119,39 +134,30 @@
             const multipliers = [2, 3, 5];
             const multiplier = multipliers[Math.floor(Math.random() * multipliers.length)];
 
-            // Točenie jednotlivých slotov
-            slots.forEach((slot, index) => {
+            reels.forEach((reel, index) => {
                 const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-                slot.classList.add('spin');
+                results.push(randomSymbol);
+                reel.style.animation = 'spin 1s ease-in-out';
                 setTimeout(() => {
-                    slot.classList.remove('spin');
-                    slot.textContent = randomSymbol.symbol;
-                    spinResult.push(randomSymbol);
-
-                    // Kontrola výhry
-                    if (index > 0 && spinResult[index].symbol !== spinResult[0].symbol && spinResult[0].symbol !== '🚴' && spinResult[index].symbol !== '🚴') {
-                        isWin = false;
-                    }
-
-                    // Ak je výhra, pripočítať hodnotu
-                    if (isWin && index === slots.length - 1) {
-                        winValue = spinResult[0].value * multiplier;
-                        credits += winValue;
-                        creditsDisplay.textContent = `Kredit: ${credits}`;
-                    }
-
-                    // Výsledok
-                    if (index === slots.length - 1) {
-                        if (isWin) {
-                            result.textContent = `Gratulujeme! Vyhrali ste ${winValue} kreditov (násobič: ${multiplier}x)!`;
-                            result.style.color = 'lime';
-                        } else {
-                            result.textContent = 'Skúste to znova.';
-                            result.style.color = 'red';
-                        }
-                    }
-                }, 500 * (index + 1));
+                    reel.textContent = randomSymbol.symbol;
+                    reel.style.animation = '';
+                }, 1000 * (index + 1));
             });
+
+            setTimeout(() => {
+                // Kontrola výhry
+                isWin = results.every((item, _, arr) => item.symbol === arr[0].symbol || item.symbol === '🚴');
+                if (isWin) {
+                    winValue = results[0].value * multiplier;
+                    credits += winValue;
+                    resultDisplay.textContent = `Gratulujeme! Vyhrali ste ${winValue} kreditov (násobič: ${multiplier}x)!`;
+                    resultDisplay.style.color = 'lime';
+                } else {
+                    resultDisplay.textContent = 'Skúste to znova.';
+                    resultDisplay.style.color = 'red';
+                }
+                creditsDisplay.textContent = `Kredit: ${credits}`;
+            }, 2000);
         }
     </script>
 </body>
