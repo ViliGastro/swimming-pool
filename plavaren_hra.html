@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internetová Plaváreň - Hra</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            position: relative;
+            width: 80%;
+            height: 80%;
+            background-color: #333;
+            border: 3px solid white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .player {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            border-radius: 50%;
+        }
+
+        .water-drop {
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background-color: cyan;
+            border-radius: 50%;
+        }
+
+        .score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+        }
+
+        .start-button {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: white;
+            color: black;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .start-button:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="score">Skóre: 0</div>
+        <div class="player" id="player"></div>
+        <button class="start-button" onclick="startGame()">Začať Hru</button>
+    </div>
+
+    <script>
+        const gameContainer = document.querySelector('.game-container');
+        const player = document.getElementById('player');
+        const scoreDisplay = document.querySelector('.score');
+        const startButton = document.querySelector('.start-button');
+
+        let score = 0;
+        let isGameActive = false;
+        let dropInterval;
+
+        function startGame() {
+            score = 0;
+            isGameActive = true;
+            startButton.style.display = 'none';
+            scoreDisplay.textContent = `Skóre: ${score}`;
+            movePlayer();
+            spawnWaterDrops();
+        }
+
+        function movePlayer() {
+            window.addEventListener('mousemove', (e) => {
+                const containerRect = gameContainer.getBoundingClientRect();
+                const playerSize = 50;
+                let x = e.clientX - containerRect.left - playerSize / 2;
+
+                // Zabezpečenie, že hráč ostane v hernej ploche
+                if (x < 0) x = 0;
+                if (x > containerRect.width - playerSize) x = containerRect.width - playerSize;
+
+                player.style.left = `${x}px`;
+            });
+        }
+
+        function spawnWaterDrops() {
+            dropInterval = setInterval(() => {
+                if (!isGameActive) return;
+
+                const drop = document.createElement('div');
+                drop.classList.add('water-drop');
+                const dropSize = 20;
+                const containerRect = gameContainer.getBoundingClientRect();
+                const randomX = Math.random() * (containerRect.width - dropSize);
+
+                drop.style.left = `${randomX}px`;
+                gameContainer.appendChild(drop);
+
+                let dropY = 0;
+
+                const dropFall = setInterval(() => {
+                    if (!isGameActive) {
+                        clearInterval(dropFall);
+                        drop.remove();
+                        return;
+                    }
+
+                    dropY += 5;
+                    drop.style.top = `${dropY}px`;
+
+                    const dropRect = drop.getBoundingClientRect();
+                    const playerRect = player.getBoundingClientRect();
+
+                    // Detekcia kolízie
+                    if (
+                        dropRect.bottom > playerRect.top &&
+                        dropRect.left < playerRect.right &&
+                        dropRect.right > playerRect.left
+                    ) {
+                        isGameActive = false;
+                        clearInterval(dropFall);
+                        clearInterval(dropInterval);
+                        alert(`Hra skončila! Vaše skóre: ${score}`);
+                        resetGame();
+                    }
+
+                    // Odstránenie kvapky, ak spadne mimo hernú plochu
+                    if (dropY > containerRect.height) {
+                        drop.remove();
+                        score++;
+                        scoreDisplay.textContent = `Skóre: ${score}`;
+                        clearInterval(dropFall);
+                    }
+                }, 30);
+            }, 1000);
+        }
+
+        function resetGame() {
+            const drops = document.querySelectorAll('.water-drop');
+            drops.forEach((drop) => drop.remove());
+            startButton.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
