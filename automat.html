@@ -3,40 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Automat - Ovocie 81</title>
+    <title>Kajot-Style Automat</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #111;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
             font-family: Arial, sans-serif;
             color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            text-align: center;
         }
 
         .container {
-            width: 600px;
-            text-align: center;
-            background-color: #222;
-            border: 5px solid #555;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            width: 800px;
+            margin: 0 auto;
             padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
         }
 
         h1 {
             color: gold;
-            text-shadow: 0 0 10px gold, 0 0 20px orange;
+            text-shadow: 0 0 10px gold;
             margin-bottom: 10px;
         }
 
         .slot-machine {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
             justify-content: center;
             margin: 20px 0;
         }
@@ -44,22 +41,14 @@
         .reel {
             width: 100px;
             height: 100px;
-            background-color: #333;
-            border: 3px solid #555;
+            background-color: #111;
+            border: 2px solid #333;
             border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 50px;
-            color: white;
-            box-shadow: inset 0 0 15px #000;
-            animation: none;
-        }
-
-        @keyframes spin {
-            0% { transform: rotateX(0deg); }
-            50% { transform: rotateX(360deg); }
-            100% { transform: rotateX(0deg); }
+            box-shadow: inset 0 0 15px black;
         }
 
         .controls {
@@ -71,88 +60,87 @@
             font-size: 18px;
             font-weight: bold;
             color: white;
-            background-color: #f90;
+            background-color: gold;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 0 15px rgba(255, 165, 0, 0.5);
         }
 
         .button:hover {
-            background-color: #ffa500;
-            box-shadow: 0 0 25px rgba(255, 165, 0, 1);
+            background-color: orange;
         }
 
-        .credits, .result {
+        .info {
             font-size: 20px;
             margin: 10px 0;
-            text-shadow: 0 0 5px white;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Online Automat - Ovocie 81</h1>
-        <div class="credits" id="credits">Kredit: 0</div>
+        <h1>Kajot-Style Automat</h1>
+        <div class="info" id="credits">Kredit: 100</div>
         <div class="slot-machine">
             <div class="reel" id="reel1">🍒</div>
             <div class="reel" id="reel2">🍋</div>
             <div class="reel" id="reel3">🍇</div>
-            <div class="reel" id="reel4">🚴</div>
+            <div class="reel" id="reel4">🍉</div>
+            <div class="reel" id="reel5">⭐</div>
         </div>
         <div class="controls">
             <button class="button" onclick="spin()">Točiť</button>
         </div>
-        <div class="result" id="result">Kliknite na "Točiť" pre začiatok!</div>
+        <div class="info" id="result">Kliknite na "Točiť" pre začiatok!</div>
     </div>
 
     <script>
-        const reels = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3'), document.getElementById('reel4')];
-        const resultDisplay = document.getElementById('result');
-        const creditsDisplay = document.getElementById('credits');
-
-        const symbols = [
-            { symbol: '🍒', value: 10 },
-            { symbol: '🍋', value: 20 },
-            { symbol: '🍇', value: 30 },
-            { symbol: '🍉', value: 50 },
-            { symbol: '🚴', value: 100 } // Wild symbol
+        const reels = [
+            document.getElementById('reel1'),
+            document.getElementById('reel2'),
+            document.getElementById('reel3'),
+            document.getElementById('reel4'),
+            document.getElementById('reel5')
         ];
+        const creditsDisplay = document.getElementById('credits');
+        const resultDisplay = document.getElementById('result');
 
-        let credits = 0;
+        let credits = 100;
+
+        const symbols = ['🍒', '🍋', '🍇', '🍉', '⭐']; // Symboly
 
         function spin() {
+            if (credits < 10) {
+                resultDisplay.textContent = 'Nemáte dostatok kreditov!';
+                return;
+            }
+
+            credits -= 10; // Odpočet kreditov
+            creditsDisplay.textContent = `Kredit: ${credits}`;
             let results = [];
-            let isWin = true;
-            let winValue = 0;
 
-            const multipliers = [2, 3, 5];
-            const multiplier = multipliers[Math.floor(Math.random() * multipliers.length)];
-
-            reels.forEach((reel, index) => {
+            reels.forEach((reel) => {
                 const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
                 results.push(randomSymbol);
-                reel.style.animation = 'spin 1s ease-in-out';
-                setTimeout(() => {
-                    reel.textContent = randomSymbol.symbol;
-                    reel.style.animation = '';
-                }, 1000 * (index + 1));
+                reel.textContent = randomSymbol;
             });
 
-            setTimeout(() => {
-                isWin = results.every((item, _, arr) => item.symbol === arr[0].symbol || item.symbol === '🚴');
-                if (isWin) {
-                    winValue = results[0].value * multiplier;
-                    credits += winValue;
-                    resultDisplay.textContent = `Gratulujeme! Vyhrali ste ${winValue} kreditov (násobič: ${multiplier}x)!`;
-                    resultDisplay.style.color = 'lime';
-                } else {
-                    resultDisplay.textContent = 'Skúste to znova.';
-                    resultDisplay.style.color = 'red';
-                }
-                creditsDisplay.textContent = `Kredit: ${credits}`;
-            }, 2000);
+            checkWin(results);
+        }
+
+        function checkWin(results) {
+            const firstSymbol = results[0];
+            const isWin = results.every((symbol) => symbol === firstSymbol);
+
+            if (isWin) {
+                const winAmount = 50;
+                credits += winAmount;
+                resultDisplay.textContent = `Gratulujeme! Vyhrali ste ${winAmount} kreditov!`;
+            } else {
+                resultDisplay.textContent = 'Skúste to znova.';
+            }
+
+            creditsDisplay.textContent = `Kredit: ${credits}`;
         }
     </script>
 </body>
