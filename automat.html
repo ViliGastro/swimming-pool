@@ -17,7 +17,7 @@
 
         .container {
             width: 800px;
-            margin: 0 auto;
+            margin: 40px auto;
             padding: 20px;
             background: rgba(0, 0, 0, 0.8);
             border-radius: 15px;
@@ -68,18 +68,18 @@
             text-shadow: 0 0 10px black;
         }
 
-        .highlight {
-            background-color: rgba(255, 215, 0, 0.5);
-            border-radius: 10px;
-        }
-
         .controls {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* rozostupy medzi tlačidlami */
         }
 
-        .button {
-            padding: 10px 30px;
-            font-size: 18px;
+        /* Štýly menších tlačidiel (zvýšiť, znížiť) */
+        .bet-button {
+            padding: 8px 16px;
+            font-size: 16px;
             font-weight: bold;
             color: white;
             background-color: gold;
@@ -87,10 +87,26 @@
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
-            margin: 5px;
         }
 
-        .button:hover {
+        .bet-button:hover {
+            background-color: orange;
+        }
+
+        /* Väčšie a výraznejšie tlačidlo Točiť */
+        .spin-button {
+            padding: 12px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background-color: gold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .spin-button:hover {
             background-color: orange;
         }
 
@@ -106,59 +122,33 @@
         <h1>Kajot-Style Automat</h1>
         <div class="credits" id="credits">Kredit: 100</div>
         <div>Cena otočenia: <span id="betAmount">10</span> kreditov</div>
+
+        <!-- Pätica valcov -->
         <div class="slot-machine">
-            <!-- Valce -->
             <div class="reel" id="reel1">
-                <div class="symbols">
-                    <div class="symbol">🍒</div>
-                    <div class="symbol">🍋</div>
-                    <div class="symbol">🍇</div>
-                    <div class="symbol">🍉</div>
-                    <div class="symbol">⭐</div>
-                </div>
+                <div class="symbols"></div>
             </div>
             <div class="reel" id="reel2">
-                <div class="symbols">
-                    <div class="symbol">🍋</div>
-                    <div class="symbol">🍇</div>
-                    <div class="symbol">🍉</div>
-                    <div class="symbol">⭐</div>
-                    <div class="symbol">🍒</div>
-                </div>
+                <div class="symbols"></div>
             </div>
             <div class="reel" id="reel3">
-                <div class="symbols">
-                    <div class="symbol">🍇</div>
-                    <div class="symbol">🍉</div>
-                    <div class="symbol">⭐</div>
-                    <div class="symbol">🍒</div>
-                    <div class="symbol">🍋</div>
-                </div>
+                <div class="symbols"></div>
             </div>
             <div class="reel" id="reel4">
-                <div class="symbols">
-                    <div class="symbol">🍉</div>
-                    <div class="symbol">⭐</div>
-                    <div class="symbol">🍒</div>
-                    <div class="symbol">🍋</div>
-                    <div class="symbol">🍇</div>
-                </div>
+                <div class="symbols"></div>
             </div>
             <div class="reel" id="reel5">
-                <div class="symbols">
-                    <div class="symbol">⭐</div>
-                    <div class="symbol">🍒</div>
-                    <div class="symbol">🍋</div>
-                    <div class="symbol">🍇</div>
-                    <div class="symbol">🍉</div>
-                </div>
+                <div class="symbols"></div>
             </div>
         </div>
+
+        <!-- Ovládacie tlačidlá -->
         <div class="controls">
-            <button class="button" onclick="spin()">Točiť</button>
-            <button class="button" onclick="increaseBet()">Zvýšiť stávku</button>
-            <button class="button" onclick="decreaseBet()">Znížiť stávku</button>
+            <button class="bet-button" onclick="decreaseBet()">-</button>
+            <button class="spin-button" onclick="spin()">Točiť</button>
+            <button class="bet-button" onclick="increaseBet()">+</button>
         </div>
+
         <div class="result" id="result">Kliknite na "Točiť" pre začiatok!</div>
     </div>
 
@@ -171,36 +161,71 @@
         let credits = 100;
         let betAmount = 10;
 
+        // Zoznam symbolov
+        const allSymbols = ["🍒", "🍋", "🍇", "🍉", "⭐"];
+
+        // Na začiatku naplníme valce (aby neboli prázdne)
+        window.onload = () => {
+            reels.forEach(reel => {
+                generateRandomSymbols(reel);
+            });
+        };
+
+        // Funkcia na náhodné naplnenie jedného valca
+        function generateRandomSymbols(reel) {
+            const symbolsContainer = reel.querySelector('.symbols');
+            symbolsContainer.innerHTML = ""; // vyčisti staré symboly
+
+            // Vygenerujeme 5 symbolov náhodne
+            for (let i = 0; i < 5; i++) {
+                const randomSymbol = allSymbols[Math.floor(Math.random() * allSymbols.length)];
+                const symbolDiv = document.createElement('div');
+                symbolDiv.classList.add('symbol');
+                symbolDiv.textContent = randomSymbol;
+                symbolsContainer.appendChild(symbolDiv);
+            }
+        }
+
         function spin() {
             if (credits < betAmount) {
                 resultDisplay.textContent = 'Nemáte dostatok kreditov!';
+                resultDisplay.style.color = 'red';
                 return;
             }
 
             credits -= betAmount;
             creditsDisplay.textContent = `Kredit: ${credits}`;
             resultDisplay.textContent = 'Točíme...';
+            resultDisplay.style.color = 'white';
 
-            // Točiace sa valce
+            // Pre každý valec vytvoríme nové symboly a nastavíme animáciu
             reels.forEach((reel) => {
+                // Náhodne vygenerujeme nové symboly
+                generateRandomSymbols(reel);
+
+                // Potom valec "roztočíme"
                 const symbolsContainer = reel.querySelector('.symbols');
-                const randomDuration = Math.random() * 2 + 1;
-
+                const randomDuration = 0.5 + Math.random() * 1.0; // 0.5s až 1.5s
                 symbolsContainer.style.transition = `transform ${randomDuration}s ease`;
-                symbolsContainer.style.transform = `translateY(-${Math.floor(Math.random() * 5) * 100}px)`;
+                
+                // Posunieme o náhodný počet "panelov" (0 až 4) - 1 panel = 100px
+                const randomOffset = Math.floor(Math.random() * 5) * 100;
+                symbolsContainer.style.transform = `translateY(-${randomOffset}px)`;
 
+                // Po skončení animácie vrátime valec hore
                 setTimeout(() => {
-                    symbolsContainer.style.transition = '';
-                    symbolsContainer.style.transform = `translateY(0)`;
+                    symbolsContainer.style.transition = "";
+                    symbolsContainer.style.transform = "translateY(0)";
                 }, randomDuration * 1000);
             });
 
-            setTimeout(() => checkWin(), 2500);
+            // Počkame, kým sa dotočí (cca 2s buffer) a potom skontrolujeme "výhru"
+            setTimeout(() => checkWin(), 2000);
         }
 
         function checkWin() {
-            // Simulácia výhry
-            const winMultiplier = Math.random() < 0.3 ? 2 : 0; // 30% šanca na výhru
+            // Jednoduchá simulácia výhry
+            const winMultiplier = Math.random() < 0.3 ? 2 : 0; // 30% šanca na dvojnásobok
             if (winMultiplier > 0) {
                 const winAmount = betAmount * winMultiplier;
                 credits += winAmount;
