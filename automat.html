@@ -68,6 +68,11 @@
             text-shadow: 0 0 10px black;
         }
 
+        .highlight {
+            background-color: rgba(255, 215, 0, 0.5);
+            border-radius: 10px;
+        }
+
         .controls {
             margin-top: 20px;
         }
@@ -82,6 +87,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
+            margin: 5px;
         }
 
         .button:hover {
@@ -93,21 +99,13 @@
             margin: 10px 0;
             text-shadow: 0 0 5px white;
         }
-
-        @keyframes spin {
-            from {
-                transform: translateY(0);
-            }
-            to {
-                transform: translateY(-500%);
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Kajot-Style Automat</h1>
         <div class="credits" id="credits">Kredit: 100</div>
+        <div>Cena otočenia: <span id="betAmount">10</span> kreditov</div>
         <div class="slot-machine">
             <!-- Valce -->
             <div class="reel" id="reel1">
@@ -117,7 +115,6 @@
                     <div class="symbol">🍇</div>
                     <div class="symbol">🍉</div>
                     <div class="symbol">⭐</div>
-                    <div class="symbol">🍒</div> <!-- Klon symbolu -->
                 </div>
             </div>
             <div class="reel" id="reel2">
@@ -127,7 +124,6 @@
                     <div class="symbol">🍉</div>
                     <div class="symbol">⭐</div>
                     <div class="symbol">🍒</div>
-                    <div class="symbol">🍋</div> <!-- Klon symbolu -->
                 </div>
             </div>
             <div class="reel" id="reel3">
@@ -137,7 +133,6 @@
                     <div class="symbol">⭐</div>
                     <div class="symbol">🍒</div>
                     <div class="symbol">🍋</div>
-                    <div class="symbol">🍇</div> <!-- Klon symbolu -->
                 </div>
             </div>
             <div class="reel" id="reel4">
@@ -147,7 +142,6 @@
                     <div class="symbol">🍒</div>
                     <div class="symbol">🍋</div>
                     <div class="symbol">🍇</div>
-                    <div class="symbol">🍉</div> <!-- Klon symbolu -->
                 </div>
             </div>
             <div class="reel" id="reel5">
@@ -157,12 +151,13 @@
                     <div class="symbol">🍋</div>
                     <div class="symbol">🍇</div>
                     <div class="symbol">🍉</div>
-                    <div class="symbol">⭐</div> <!-- Klon symbolu -->
                 </div>
             </div>
         </div>
         <div class="controls">
             <button class="button" onclick="spin()">Točiť</button>
+            <button class="button" onclick="increaseBet()">Zvýšiť stávku</button>
+            <button class="button" onclick="decreaseBet()">Znížiť stávku</button>
         </div>
         <div class="result" id="result">Kliknite na "Točiť" pre začiatok!</div>
     </div>
@@ -170,38 +165,65 @@
     <script>
         const reels = document.querySelectorAll('.reel');
         const creditsDisplay = document.getElementById('credits');
+        const betAmountDisplay = document.getElementById('betAmount');
         const resultDisplay = document.getElementById('result');
 
         let credits = 100;
+        let betAmount = 10;
 
         function spin() {
-            if (credits < 10) {
+            if (credits < betAmount) {
                 resultDisplay.textContent = 'Nemáte dostatok kreditov!';
                 return;
             }
 
-            credits -= 10;
+            credits -= betAmount;
             creditsDisplay.textContent = `Kredit: ${credits}`;
+            resultDisplay.textContent = 'Točíme...';
 
-            reels.forEach((reel, index) => {
+            // Točiace sa valce
+            reels.forEach((reel) => {
                 const symbolsContainer = reel.querySelector('.symbols');
-                const duration = Math.random() * 2 + 1.5;
+                const randomDuration = Math.random() * 2 + 1;
 
-                symbolsContainer.style.transition = `transform ${duration}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
+                symbolsContainer.style.transition = `transform ${randomDuration}s ease`;
                 symbolsContainer.style.transform = `translateY(-${Math.floor(Math.random() * 5) * 100}px)`;
 
                 setTimeout(() => {
                     symbolsContainer.style.transition = '';
-                    symbolsContainer.style.transform = `translateY(0px)`;
-                }, duration * 1000);
+                    symbolsContainer.style.transform = `translateY(0)`;
+                }, randomDuration * 1000);
             });
 
-            setTimeout(checkWin, 2500);
+            setTimeout(() => checkWin(), 2500);
         }
 
         function checkWin() {
-            resultDisplay.textContent = 'Skúste to znova.';
-            resultDisplay.style.color = 'red';
+            // Simulácia výhry
+            const winMultiplier = Math.random() < 0.3 ? 2 : 0; // 30% šanca na výhru
+            if (winMultiplier > 0) {
+                const winAmount = betAmount * winMultiplier;
+                credits += winAmount;
+                resultDisplay.textContent = `Gratulujeme! Vyhrali ste ${winAmount} kreditov!`;
+                resultDisplay.style.color = 'lime';
+            } else {
+                resultDisplay.textContent = 'Skúste to znova.';
+                resultDisplay.style.color = 'red';
+            }
+
+            creditsDisplay.textContent = `Kredit: ${credits}`;
+        }
+
+        function increaseBet() {
+            betAmount += 10;
+            betAmountDisplay.textContent = betAmount;
+        }
+
+        function decreaseBet() {
+            if (betAmount > 10) {
+                betAmount -= 10;
+                betAmountDisplay.textContent = betAmount;
+            }
         }
     </script>
 </body>
