@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Výherný Automat - Ovocie 81</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        .machine {
+            margin: 20px auto;
+            width: 320px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .slot {
+            width: 70px;
+            height: 70px;
+            background-color: #222;
+            border: 2px solid white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: yellow;
+            font-weight: bold;
+            animation: none;
+        }
+
+        .slot.spin {
+            animation: spin 0.5s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: rotateX(0deg); }
+            50% { transform: rotateX(360deg); }
+            100% { transform: rotateX(0deg); }
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .button:hover {
+            background-color: #555;
+        }
+
+        .result, .credits {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Výherný Automat - Ovocie 81</h1>
+    <div class="credits" id="credits">Kredit: 0</div>
+    <div class="machine" id="machine">
+        <div class="slot">🍒</div>
+        <div class="slot">🍋</div>
+        <div class="slot">🍇</div>
+        <div class="slot">🍉</div>
+    </div>
+    <div class="controls">
+        <button class="button" onclick="spin()">Točiť</button>
+    </div>
+    <div class="result" id="result">Kliknite na "Točiť" pre začiatok!</div>
+
+    <script>
+        const slots = document.querySelectorAll('.slot');
+        const result = document.getElementById('result');
+        const creditsDisplay = document.getElementById('credits');
+
+        // Ovocné symboly s výškou výhry
+        const symbols = [
+            { symbol: '🍒', value: 10 },
+            { symbol: '🍋', value: 20 },
+            { symbol: '🍇', value: 30 },
+            { symbol: '🍉', value: 50 },
+            { symbol: '🚴', value: 100 } // Symbol Wild - cyklista
+        ];
+
+        let credits = 0;
+
+        function spin() {
+            let spinResult = [];
+            let isWin = true;
+            let winValue = 0;
+
+            // Generovanie násobiča (2x, 3x, alebo 5x)
+            const multipliers = [2, 3, 5];
+            const multiplier = multipliers[Math.floor(Math.random() * multipliers.length)];
+
+            // Točenie jednotlivých slotov
+            slots.forEach((slot, index) => {
+                const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+                slot.classList.add('spin');
+                setTimeout(() => {
+                    slot.classList.remove('spin');
+                    slot.textContent = randomSymbol.symbol;
+                    spinResult.push(randomSymbol);
+
+                    // Kontrola výhry
+                    if (index > 0 && spinResult[index].symbol !== spinResult[0].symbol && spinResult[0].symbol !== '🚴' && spinResult[index].symbol !== '🚴') {
+                        isWin = false;
+                    }
+
+                    // Ak je výhra, pripočítať hodnotu
+                    if (isWin && index === slots.length - 1) {
+                        winValue = spinResult[0].value * multiplier;
+                        credits += winValue;
+                        creditsDisplay.textContent = `Kredit: ${credits}`;
+                    }
+
+                    // Výsledok
+                    if (index === slots.length - 1) {
+                        if (isWin) {
+                            result.textContent = `Gratulujeme! Vyhrali ste ${winValue} kreditov (násobič: ${multiplier}x)!`;
+                            result.style.color = 'lime';
+                        } else {
+                            result.textContent = 'Skúste to znova.';
+                            result.style.color = 'red';
+                        }
+                    }
+                }, 500 * (index + 1));
+            });
+        }
+    </script>
+</body>
+</html>
