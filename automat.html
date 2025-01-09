@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Čejs 27 – Výherné rady (diagonály, Wild font)</title>
+  <title>Čejs 27 – Výherné rady (rýchlejšie, väčšie TOČIŤ, Wild rámček)</title>
   <style>
     body {
       margin: 0;
@@ -43,7 +43,6 @@
       margin: 20px 0;
     }
 
-    /* Valce väčšie */
     .reel {
       width: 200px;
       height: 600px; /* 3 symboly po 200px = 600px */
@@ -63,7 +62,6 @@
       flex-direction: column;
     }
 
-    /* Symboly dvakrát tak veľké */
     .symbol {
       width: 100%;
       height: 200px;
@@ -76,14 +74,14 @@
       transition: background-color 0.3s;
     }
 
-    /* Wild s iným fontom */
+    /* Wild s iným minimalistickým fontom + rámčekom */
     .wildSymbol {
-      font-family: "Brush Script MT", cursive; /* alebo iný dekoratívny font */
-      color: #FF69B4; /* ružovejšia farba, napr. */
-      text-shadow: 
-        0 0 5px #ff69b4,
-        0 0 10px #ff1493;
+      font-family: "Arial", sans-serif; /* zvoľte iný font, ak chcete */
+      color: #00FFFF;
       font-weight: bold;
+      border: 2px solid #fff;
+      border-radius: 6px;
+      padding: 4px 8px;
     }
 
     /* Zvýraznenie výherných symbolov */
@@ -118,9 +116,11 @@
       font-size: 20px;
       padding: 10px 20px;
     }
+
+    /* Oveľa väčšie tlačidlo TOČIŤ */
     .spin-button {
-      font-size: 24px;
-      padding: 14px 40px;
+      font-size: 36px;
+      padding: 20px 60px;
     }
 
     .credits,
@@ -184,8 +184,7 @@
 
     /**
      * Vygeneruje (resp. vymaže staré a vloží) 9 symbolov do daného valca.
-     * Táto funkcia sa volá pri prvom načítaní (onload).
-     * Pri spin-e však nepoužívame presne túto, ale "prepareReelForSpin".
+     * Pri prvom načítaní (onload).
      */
     function generate9Symbols(reel) {
       const container = reel.querySelector('.symbols');
@@ -222,10 +221,9 @@
      */
     function prepareReelForSpin(reel) {
       const container = reel.querySelector('.symbols');
-
       const oldSymbols = Array.from(container.querySelectorAll('.symbol'));
       // Posledné 3 (tie, ktoré boli viditeľné naposledy)
-      const final3 = oldSymbols.slice(6, 9); 
+      const final3 = oldSymbols.slice(6, 9);
 
       // Vymažeme všetko
       container.innerHTML = "";
@@ -276,13 +274,15 @@
 
     /**
      * Animácia točenia (3 sekundy).
-     * Posun: 0 -> -1200 px (6 symbolov * 200 px = 1200)
+     * Tentoraz väčšia vzdialenosť (2400 px), aby bola rýchlosť vyššia.
      */
     function spinReelAnimation(reel, onComplete) {
       const symbolsContainer = reel.querySelector('.symbols');
       const startTime = performance.now();
-      const duration = 3000; 
-      const maxOffset = 1200; 
+      const duration = 3000;
+      // Zvýšený offset: 2400 px => 12 symbolov * 200px, hoci reálne máme len 9
+      // ale pri točení to vytvorí pocit rýchlejšieho otáčania.
+      const maxOffset = 2400;
 
       function animate(time) {
         let elapsed = time - startTime;
@@ -296,7 +296,7 @@
         if (elapsed < duration) {
           requestAnimationFrame(animate);
         } else {
-          // Zastavíme na -1200 px
+          // Zastavíme na -2400 px
           symbolsContainer.style.transform = `translateY(${-maxOffset}px)`;
           onComplete && onComplete();
         }
@@ -314,13 +314,16 @@
     /**
      * Vyhodnotenie výhry zahŕňa:
      * - 3 horizontálne línie (0,1,2)
-     * - 2 diagonálne línie ([0,0],[1,1],[2,2]) a ([0,2],[1,1],[2,0])
+     * - 2 diagonálne línie ([0][0],[1][1],[2][2]) a ([0][2],[1][1],[2][0])
      */
     function checkWin() {
       // Finálne 3 symboly na každom valci (indexy 6,7,8)
       const reelSymbols = [];
       reels.forEach((reel) => {
         const syms = reel.querySelectorAll('.symbol');
+        // Pozor, ak je container posunutý až na -2400 px, budú "viditeľné" 
+        // teoreticky "posledné" 3 symboly. 
+        // Ale reálne máme len 9, z čoho indexy 6..8 sú tie spodné 3.
         reelSymbols.push([
           syms[6],
           syms[7],
@@ -335,9 +338,7 @@
         const s1 = reelSymbols[0][row];
         const s2 = reelSymbols[1][row];
         const s3 = reelSymbols[2][row];
-        
-        const lineMultiplier = checkLineAndGetMultiplier(s1, s2, s3);
-        totalMultiplier += lineMultiplier;
+        totalMultiplier += checkLineAndGetMultiplier(s1, s2, s3);
       }
 
       // Diagonála 1 (zľava hore -> doprava dole)
@@ -383,30 +384,24 @@
         [s1, s2, s3].filter(sym => sym !== 'Wild')
       );
 
-      // Ak je size <= 1, znamená to, že buď sú všetky rovnaké, alebo to doplnia Wildy
       if (distinctNonWild.size <= 1) {
         let rowMultiplier = 2;
-
-        // Každý Wild navyšuje ×2
         const wildCount = [s1, s2, s3].filter(x => x === 'Wild').length;
         rowMultiplier *= Math.pow(2, wildCount);
 
-        // Zvýrazníme
         el1.classList.add('highlight');
         el2.classList.add('highlight');
         el3.classList.add('highlight');
-
         return rowMultiplier;
       }
       return 0;
     }
 
     /**
-     * getSymbolText(el): ak má <span class="wildSymbol">WILD</span>,
-     * vrátime "Wild". Inak vrátime textContent (napr. "🍒").
+     * getSymbolText(el): zistí, či je to "Wild" (podľa vnútornej <span>),
+     * inak vráti priamo text (napr. "🍒").
      */
     function getSymbolText(el) {
-      // Ak je vnútri <span class="wildSymbol">, tak je to "Wild"
       const span = el.querySelector('.wildSymbol');
       if (span) return 'Wild';
       return el.textContent.trim();
