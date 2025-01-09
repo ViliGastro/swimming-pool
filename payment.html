@@ -55,16 +55,46 @@
             color: black;
             box-shadow: 0 0 20px rgba(255, 255, 255, 1); /* Intenzívnejšie svetlo pri prechode myšou */
         }
+
+        #paypal-button-container {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="background">
         <div class="buttons-container">
-            <!-- Tlačidlo "Zaplať PayPal" -->
-            <button class="button" onclick="window.location.href='https://www.paypal.com/donate/?hosted_button_id=PG9J5NL7L4XXL';">Zaplať PayPal</button>
-            <!-- Tlačidlo "Zaplať zajtra" -->
+            <button class="button" onclick="showPayPal()">Zaplať PayPal</button>
             <button class="button" onclick="window.location.href='zaplatim_zajtra.html';">Zaplať zajtra</button>
         </div>
+        <div id="paypal-button-container-P-00Y41459WS334460XM57WBKQ" style="display: none;">
+            <!-- PayPal Button will be rendered here -->
+        </div>
     </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AcW6sU0ndhHCfF_Gdz337nukk8EewfYkPOES-tJnHoCpEGVc0zBg1D1Bt345rmKeQBWvQ3vCnQiSyLtK&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+    <script>
+        function showPayPal() {
+            document.getElementById('paypal-button-container-P-00Y41459WS334460XM57WBKQ').style.display = 'block';
+        }
+
+        paypal.Buttons({
+            style: {
+                shape: 'pill',
+                color: 'blue',
+                layout: 'vertical',
+                label: 'paypal'
+            },
+            createSubscription: function (data, actions) {
+                return actions.subscription.create({
+                    /* Creates the subscription */
+                    plan_id: 'P-00Y41459WS334460XM57WBKQ'
+                });
+            },
+            onApprove: function (data, actions) {
+                alert('Subscription created! ID: ' + data.subscriptionID);
+            }
+        }).render('#paypal-button-container-P-00Y41459WS334460XM57WBKQ');
+    </script>
 </body>
 </html>
