@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Čejs 27 – Menšie valce, okrúhle tlačidlá, autostart, upravené symboly</title>
+  <title>Čejs 27 – Automaty s pozadím</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: url('background.jpg') no-repeat center center fixed;
+      /* TU je nastavenie obrázka na pozadie. 
+         Upravte 'background.jpg' na vlastný obrázok. */
+      background: url('backgroundhell.jpg') no-repeat center center fixed;
       background-size: cover;
+
       font-family: Arial, sans-serif;
       color: #fff;
       text-align: center;
@@ -19,6 +22,11 @@
       width: 900px;
       margin: 40px auto;
       padding: 20px;
+      /* 
+         Ak chcete, aby sa v .container prekrývala iná farba, 
+         zachovajte background: rgba(0,0,0,0.8). 
+         Alebo to vypnite, ak chcete priesvitný kontajner. 
+      */
       background: rgba(0, 0, 0, 0.8);
       border-radius: 15px;
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
@@ -35,11 +43,10 @@
       margin-bottom: 20px;
     }
 
-    /* 3 valce, menšie rozmery, minimal gap */
     .slot-machine {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2px; /* znížené, aby kraje boli bližšie k stredu */
+      gap: 2px;
       justify-content: center;
       margin: 20px 0;
     }
@@ -63,7 +70,6 @@
       flex-direction: column;
     }
 
-    /* Každé pole symbolu má tenkú čiaru okolo seba */
     .symbol {
       width: 100%;
       height: 100px;
@@ -74,11 +80,10 @@
       color: white;
       text-shadow: 0 0 10px black;
       transition: background-color 0.3s;
-      border: 1px solid #aaa; /* tenká čiara */
-      box-sizing: border-box; /* aby sa rám narátal do výšky/šírky správne */
+      border: 1px solid #aaa;
+      box-sizing: border-box;
     }
 
-    /* Menší text "Wild" */
     .wildSymbol {
       font-family: "Brush Script MT", cursive;
       font-size: 28px;
@@ -93,7 +98,6 @@
       background-color: rgba(255, 255, 0, 0.3);
     }
 
-    /* TLAČIDLÁ */
     .controls {
       margin-top: 20px;
       display: flex;
@@ -108,7 +112,7 @@
       color: #fff;
       background-color: #ffb300;
       border: none;
-      border-radius: 50%; /* okrúhle */
+      border-radius: 50%;
       cursor: pointer;
       width: 50px;
       height: 50px;
@@ -137,7 +141,6 @@
       box-shadow: 0 0 15px rgba(255, 132, 0, 0.9);
     }
 
-    /* AUTO button */
     .auto-button {
       font-size: 24px;
       padding: 14px 25px;
@@ -158,12 +161,6 @@
       box-shadow: 0 0 15px #00cc66;
     }
 
-    /*
-      Dolná lišta - 3 stĺpce:
-      1) Kredit vľavo
-      2) Výsledok uprostred (väčšie písmo)
-      3) Stávka vpravo
-    */
     .bottom-info {
       display: grid;
       grid-template-columns: auto 1fr auto;
@@ -187,8 +184,8 @@
       background-color: rgba(0,0,0,0.3);
       padding: 8px 15px;
       border-radius: 5px;
-      font-size: 28px; /* väčšie, aby bola výhra/prehra výrazná */
-      min-width: 220px; /* aby sa to pri krátkom texte nezmenšovalo */
+      font-size: 28px;
+      min-width: 220px;
     }
 
     .bet-box {
@@ -205,7 +202,6 @@
   <div class="container">
     <h1>Čejs 27</h1>
 
-    <!-- 3 menšie valce -->
     <div class="slot-machine">
       <div class="reel" id="reel1">
         <div class="symbols"></div>
@@ -218,7 +214,6 @@
       </div>
     </div>
 
-    <!-- Ovládacie tlačidlá -->
     <div class="controls">
       <button class="bet-button" onclick="decreaseBet()">-</button>
       <button class="spin-button" onclick="spin()">TOČIŤ</button>
@@ -226,7 +221,6 @@
       <button class="bet-button" onclick="increaseBet()">+</button>
     </div>
 
-    <!-- Spodné 3 stĺpce: Kredit (vľavo), Výsledok (v strede), Stávka (vpravo) -->
     <div class="bottom-info">
       <div class="credits-box" id="creditsBox">Kredit: 200</div>
       <div class="result-box" id="resultBox">Pripravený...</div>
@@ -248,7 +242,6 @@
     // Symboly, "Wild" = menší text
     const allSymbols = ["🍒", "🍋", "🍇", "🍉", "⭐", "Wild"];
 
-    // Pri spustení
     window.onload = () => {
       reels.forEach((reel) => {
         generate9Symbols(reel);
@@ -256,7 +249,6 @@
       updateDisplays();
     };
 
-    // Naplníme reel 9 symbolmi
     function generate9Symbols(reel) {
       const container = reel.querySelector('.symbols');
       container.innerHTML = "";
@@ -278,7 +270,6 @@
       return div;
     }
 
-    // Pripravíme valec na točenie (posledné 3 necháme hore, 6 nových)
     function prepareReelForSpin(reel) {
       const container = reel.querySelector('.symbols');
       const oldSymbols = Array.from(container.querySelectorAll('.symbol'));
@@ -290,7 +281,6 @@
       }
     }
 
-    // Spustenie točenia
     function spin() {
       if (credits < betAmount) {
         resultBox.textContent = 'Nemáte dosť kreditov!';
@@ -321,7 +311,6 @@
       });
     }
 
-    // Animácia (3 sekundy), posun 0 -> -600 px (3 symboly * 100 px * 2)
     function spinReelAnimation(reel, onComplete) {
       const symbolsContainer = reel.querySelector('.symbols');
       const startTime = performance.now();
@@ -347,14 +336,12 @@
       requestAnimationFrame(animate);
     }
 
-    // Funkcia zrýchlenia/spomalenia
     function easeInOutQuad(t) {
       return (t < 0.5)
         ? 2 * t * t
         : 1 - Math.pow(-2 * t + 2, 2) / 2;
     }
 
-    // Vyhodnotenie (3 horizontálne + 2 diagonály)
     function checkWin() {
       const reelSymbols = [];
       reels.forEach((reel) => {
@@ -364,11 +351,12 @@
 
       let totalMultiplier = 0;
 
-      // 3 riadky
+      // horizontálne riadky
       for (let row = 0; row < 3; row++) {
         totalMultiplier += checkLine(reelSymbols[0][row], reelSymbols[1][row], reelSymbols[2][row]);
       }
-      // 2 diagonály
+
+      // diagonály
       totalMultiplier += checkLine(reelSymbols[0][0], reelSymbols[1][1], reelSymbols[2][2]);
       totalMultiplier += checkLine(reelSymbols[0][2], reelSymbols[1][1], reelSymbols[2][0]);
 
@@ -383,7 +371,6 @@
         resultBox.style.color = 'red';
       }
 
-      // Autospin
       if (autoSpin && credits >= betAmount) {
         setTimeout(() => spin(), 700);
       } else {
@@ -441,13 +428,11 @@
       }
     }
 
-    /* Vypíše aktualizovaný kredit aj stávku */
     function updateDisplays() {
       creditsBox.textContent = `Kredit: ${credits}`;
       betBox.textContent = `Stávka: ${betAmount}`;
     }
 
-    /* Prepínač autospinu */
     function toggleAutospin() {
       autoSpin = !autoSpin;
       if (autoSpin) {
