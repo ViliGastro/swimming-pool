@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Čejs 27 – Automaty</title>
+  <title>Čejs 27 – Automaty s pozadím</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      /* Nastavenie vášho pozadia na backgroundhell.jpg */
-      background: url('backgroundhell.jpg') no-repeat center center fixed;
+      /* TU je nastavenie obrázka na pozadie. 
+         Upravte 'background.jpg' na vlastný obrázok. */
+      background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
 
       font-family: Arial, sans-serif;
@@ -21,6 +22,11 @@
       width: 900px;
       margin: 40px auto;
       padding: 20px;
+      /* 
+         Ak chcete, aby sa v .container prekrývala iná farba, 
+         zachovajte background: rgba(0,0,0,0.8). 
+         Alebo to vypnite, ak chcete priesvitný kontajner. 
+      */
       background: rgba(0, 0, 0, 0.8);
       border-radius: 15px;
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
@@ -37,11 +43,10 @@
       margin-bottom: 20px;
     }
 
-    /* Slot machine – 3 valce, menšie rozmery */
     .slot-machine {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2px; 
+      gap: 2px;
       justify-content: center;
       margin: 20px 0;
     }
@@ -65,7 +70,6 @@
       flex-direction: column;
     }
 
-    /* Každé pole symbolu má tenkú čiaru okolo seba */
     .symbol {
       width: 100%;
       height: 100px;
@@ -94,7 +98,6 @@
       background-color: rgba(255, 255, 0, 0.3);
     }
 
-    /* TLAČIDLÁ */
     .controls {
       margin-top: 20px;
       display: flex;
@@ -158,7 +161,6 @@
       box-shadow: 0 0 15px #00cc66;
     }
 
-    /* Spodná lišta: Kredit, Výsledok, Stávka */
     .bottom-info {
       display: grid;
       grid-template-columns: auto 1fr auto;
@@ -237,10 +239,9 @@
     let betAmount = 10;
     let autoSpin = false;
 
-    // Symboly
+    // Symboly, "Wild" = menší text
     const allSymbols = ["🍒", "🍋", "🍇", "🍉", "⭐", "Wild"];
 
-    // Po načítaní stránky vygenerujeme symboly
     window.onload = () => {
       reels.forEach((reel) => {
         generate9Symbols(reel);
@@ -350,11 +351,12 @@
 
       let totalMultiplier = 0;
 
-      // 3 horizontálne riadky
+      // horizontálne riadky
       for (let row = 0; row < 3; row++) {
         totalMultiplier += checkLine(reelSymbols[0][row], reelSymbols[1][row], reelSymbols[2][row]);
       }
-      // 2 diagonály
+
+      // diagonály
       totalMultiplier += checkLine(reelSymbols[0][0], reelSymbols[1][1], reelSymbols[2][2]);
       totalMultiplier += checkLine(reelSymbols[0][2], reelSymbols[1][1], reelSymbols[2][0]);
 
@@ -394,4 +396,56 @@
         rowMultiplier *= Math.pow(2, wildCount);
 
         el1.classList.add('highlight');
-        el2.classList.add('
+        el2.classList.add('highlight');
+        el3.classList.add('highlight');
+        return rowMultiplier;
+      }
+      return 0;
+    }
+
+    function getSymbolText(el) {
+      const span = el.querySelector('.wildSymbol');
+      return span ? 'Wild' : el.textContent.trim();
+    }
+
+    function removeAllHighlights() {
+      reels.forEach((reel) => {
+        reel.querySelectorAll('.symbol').forEach(sym => {
+          sym.classList.remove('highlight');
+        });
+      });
+    }
+
+    function increaseBet() {
+      betAmount += 10;
+      updateDisplays();
+    }
+
+    function decreaseBet() {
+      if (betAmount > 10) {
+        betAmount -= 10;
+        updateDisplays();
+      }
+    }
+
+    function updateDisplays() {
+      creditsBox.textContent = `Kredit: ${credits}`;
+      betBox.textContent = `Stávka: ${betAmount}`;
+    }
+
+    function toggleAutospin() {
+      autoSpin = !autoSpin;
+      if (autoSpin) {
+        autoBtn.classList.add('active');
+        if (credits >= betAmount) spin();
+        else {
+          autoSpin = false;
+          autoBtn.classList.remove('active');
+        }
+      } else {
+        autoBtn.classList.remove('active');
+      }
+    }
+  </script>
+</body>
+</html>
