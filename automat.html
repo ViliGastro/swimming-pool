@@ -2,8 +2,8 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Čejs 27 – Automaty s pozadím</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Čejs 27 – Plynulé Automaty</title>
   <style>
     body {
       margin: 0;
@@ -22,7 +22,6 @@
       background: rgba(0, 0, 0, 0.8);
       border-radius: 15px;
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-      position: relative;
     }
 
     h1 {
@@ -35,7 +34,7 @@
     .slot-machine {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
+      gap: 10px;
       justify-content: center;
       margin: 20px 0;
     }
@@ -57,7 +56,6 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      align-items: center;
     }
 
     .symbol {
@@ -111,25 +109,13 @@
 
     <div class="slot-machine">
       <div class="reel" id="reel1">
-        <div class="symbols">
-          <div class="symbol">🍒</div>
-          <div class="symbol">🍋</div>
-          <div class="symbol">🍇</div>
-        </div>
+        <div class="symbols"></div>
       </div>
       <div class="reel" id="reel2">
-        <div class="symbols">
-          <div class="symbol">🍉</div>
-          <div class="symbol">⭐</div>
-          <div class="symbol">🍒</div>
-        </div>
+        <div class="symbols"></div>
       </div>
       <div class="reel" id="reel3">
-        <div class="symbols">
-          <div class="symbol">🍋</div>
-          <div class="symbol">🍇</div>
-          <div class="symbol">🍉</div>
-        </div>
+        <div class="symbols"></div>
       </div>
     </div>
 
@@ -144,23 +130,47 @@
 
   <script>
     let credits = 100;
+    const allSymbols = ["🍒", "🍋", "🍇", "🍉", "⭐", "Wild"];
+    const reels = document.querySelectorAll('.reel .symbols');
+
+    // Funkcia na generovanie náhodných symbolov
+    function generateRandomSymbols(reel) {
+      reel.innerHTML = ''; // Vymažeme existujúce symboly
+      for (let i = 0; i < 9; i++) {
+        const randomSymbol = allSymbols[Math.floor(Math.random() * allSymbols.length)];
+        const symbolDiv = document.createElement('div');
+        symbolDiv.classList.add('symbol');
+        symbolDiv.textContent = randomSymbol;
+        reel.appendChild(symbolDiv);
+      }
+    }
+
+    // Inicializácia valcov pri načítaní stránky
+    window.onload = () => {
+      reels.forEach((reel) => {
+        generateRandomSymbols(reel);
+      });
+    };
 
     function spin() {
-      const reels = document.querySelectorAll('.reel .symbols');
+      if (credits < 10) {
+        alert('Nemáte dostatok kreditov!');
+        return;
+      }
 
-      // Odpočet kreditov
       credits -= 10;
       document.getElementById('credits').textContent = credits;
 
-      // Otáčanie valcov
       reels.forEach((reel) => {
-        reel.style.transition = 'transform 1s ease';
-        reel.style.transform = 'translateY(-100px)';
+        const symbolsContainer = reel.parentElement.querySelector('.symbols');
+        symbolsContainer.style.transition = 'transform 1s ease';
+        symbolsContainer.style.transform = 'translateY(-200px)';
 
-        // Po dokončení animácie reset pozície
+        // Po otočení generujeme nové symboly a resetujeme pozíciu
         setTimeout(() => {
-          reel.style.transition = 'none';
-          reel.style.transform = 'translateY(0px)';
+          generateRandomSymbols(symbolsContainer);
+          symbolsContainer.style.transition = 'none';
+          symbolsContainer.style.transform = 'translateY(0px)';
         }, 1000);
       });
     }
