@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Čejs 27 – Automaty</title>
+  <title>Čejs 27 – Menšie valce, okrúhle tlačidlá, autostart, upravené symboly</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      /* Nastavenie vášho pozadia na backgroundhell.jpg */
-      background: url('backgroundhell.jpg') no-repeat center center fixed;
+      background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
-
       font-family: Arial, sans-serif;
       color: #fff;
       text-align: center;
@@ -37,17 +35,17 @@
       margin-bottom: 20px;
     }
 
-    /* Slot machine – 3 valce, menšie rozmery */
+    /* Zmenšené valce, menší gap (2px) pre bližšie stĺpce */
     .slot-machine {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2px; 
+      gap: 2px; /* znížená medzera okolo stredného valca */
       justify-content: center;
       margin: 20px 0;
     }
 
     .reel {
-      width: 100px;
+      width: 100px;  
       height: 300px;
       overflow: hidden;
       background-color: #111;
@@ -65,7 +63,7 @@
       flex-direction: column;
     }
 
-    /* Každé pole symbolu má tenkú čiaru okolo seba */
+    /* Tenká čiara okolo každého symbolu */
     .symbol {
       width: 100%;
       height: 100px;
@@ -76,13 +74,14 @@
       color: white;
       text-shadow: 0 0 10px black;
       transition: background-color 0.3s;
-      border: 1px solid #aaa;
-      box-sizing: border-box;
+      border: 1px solid #aaa; /* tenká čiara */
+      box-sizing: border-box; /* aby sa rám započítal do veľkosti */
     }
 
+    /* Menší Wild symbol + text "Wild" */
     .wildSymbol {
-      font-family: "Brush Script MT", cursive;
-      font-size: 28px;
+      font-family: "Brush Script MT", cursive; 
+      font-size: 28px;       /* menšie písmo */
       color: #FF69B4;
       text-shadow:
         0 0 5px #ff69b4,
@@ -94,7 +93,6 @@
       background-color: rgba(255, 255, 0, 0.3);
     }
 
-    /* TLAČIDLÁ */
     .controls {
       margin-top: 20px;
       display: flex;
@@ -103,15 +101,16 @@
       gap: 20px;
     }
 
+    /* Okrúhle tlačidlá stávky (- a +) */
     .bet-button {
       font-size: 18px;
       font-weight: bold;
       color: #fff;
       background-color: #ffb300;
       border: none;
-      border-radius: 50%;
+      border-radius: 50%;  /* okrúhle */
       cursor: pointer;
-      width: 50px;
+      width: 50px; 
       height: 50px;
       box-shadow: 0 0 10px rgba(255, 179, 0, 0.7);
       transition: 0.3s;
@@ -121,6 +120,7 @@
       box-shadow: 0 0 15px rgba(255, 132, 0, 0.9);
     }
 
+    /* Tlačidlo TOČIŤ = dvakrát väčšie */
     .spin-button {
       font-size: 48px;
       padding: 20px 50px;
@@ -138,6 +138,7 @@
       box-shadow: 0 0 15px rgba(255, 132, 0, 0.9);
     }
 
+    /* Tlačidlo AUTO */
     .auto-button {
       font-size: 24px;
       padding: 14px 25px;
@@ -154,21 +155,20 @@
       box-shadow: 0 0 15px rgba(100, 100, 100, 0.9);
     }
     .auto-button.active {
-      background-color: #00cc66;
+      background-color: #00cc66; 
       box-shadow: 0 0 15px #00cc66;
     }
 
-    /* Spodná lišta: Kredit, Výsledok, Stávka */
     .bottom-info {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      margin-top: 40px;
       position: relative;
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
+    /* Kredit vľavo dole s čiernym rámom */
     .credits-box {
-      justify-self: start;
       border: 1px solid #000;
       background-color: rgba(0,0,0,0.3);
       padding: 5px 10px;
@@ -176,18 +176,8 @@
       font-size: 20px;
     }
 
+    /* Výhra / stav vpravo dole s čiernym rámom */
     .result-box {
-      justify-self: center;
-      border: 1px solid #000;
-      background-color: rgba(0,0,0,0.3);
-      padding: 8px 15px;
-      border-radius: 5px;
-      font-size: 28px;
-      min-width: 220px;
-    }
-
-    .bet-box {
-      justify-self: end;
       border: 1px solid #000;
       background-color: rgba(0,0,0,0.3);
       padding: 5px 10px;
@@ -222,7 +212,6 @@
     <div class="bottom-info">
       <div class="credits-box" id="creditsBox">Kredit: 200</div>
       <div class="result-box" id="resultBox">Pripravený...</div>
-      <div class="bet-box" id="betBox">Stávka: 10</div>
     </div>
   </div>
 
@@ -230,17 +219,15 @@
     const reels = document.querySelectorAll('.reel');
     const creditsBox = document.getElementById('creditsBox');
     const resultBox = document.getElementById('resultBox');
-    const betBox = document.getElementById('betBox');
     const autoBtn = document.getElementById('autoBtn');
 
     let credits = 200;
     let betAmount = 10;
-    let autoSpin = false;
+    let autoSpin = false;  // autospin zapnutý/vypnutý
 
-    // Symboly
+    // Zoznam symbolov, namiesto "JOKER" je teraz "Wild"
     const allSymbols = ["🍒", "🍋", "🍇", "🍉", "⭐", "Wild"];
 
-    // Po načítaní stránky vygenerujeme symboly
     window.onload = () => {
       reels.forEach((reel) => {
         generate9Symbols(reel);
@@ -262,6 +249,7 @@
       div.classList.add('symbol');
 
       if (randomSymbol === "Wild") {
+        // Text "Wild", menší font (definované v CSS triede .wildSymbol)
         div.innerHTML = `<span class="wildSymbol">Wild</span>`;
       } else {
         div.textContent = randomSymbol;
@@ -274,6 +262,7 @@
       const oldSymbols = Array.from(container.querySelectorAll('.symbol'));
       const final3 = oldSymbols.slice(6, 9);
       container.innerHTML = "";
+
       final3.forEach(sym => container.appendChild(sym));
       for (let i = 0; i < 6; i++) {
         container.appendChild(createRandomSymbolDiv());
@@ -289,6 +278,7 @@
         return;
       }
 
+      // Odpočítame stávku
       credits -= betAmount;
       updateDisplays();
       resultBox.textContent = 'Valce sa točia...';
@@ -313,8 +303,8 @@
     function spinReelAnimation(reel, onComplete) {
       const symbolsContainer = reel.querySelector('.symbols');
       const startTime = performance.now();
-      const duration = 3000;
-      const maxOffset = 600;
+      const duration = 3000; 
+      const maxOffset = 600;  // (3 symboly * 100px) * 2
 
       function animate(time) {
         let elapsed = time - startTime;
@@ -336,26 +326,26 @@
     }
 
     function easeInOutQuad(t) {
-      return (t < 0.5)
-        ? 2 * t * t
-        : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      return (t < 0.5) ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
     }
 
     function checkWin() {
       const reelSymbols = [];
       reels.forEach((reel) => {
         const syms = reel.querySelectorAll('.symbol');
+        // Viditeľné po spomalení sú indexy 6..8
         reelSymbols.push([ syms[6], syms[7], syms[8] ]);
       });
 
       let totalMultiplier = 0;
 
-      // 3 horizontálne riadky
+      // 3 horizontálne línie
       for (let row = 0; row < 3; row++) {
         totalMultiplier += checkLine(reelSymbols[0][row], reelSymbols[1][row], reelSymbols[2][row]);
       }
-      // 2 diagonály
+      // Diagonála 1
       totalMultiplier += checkLine(reelSymbols[0][0], reelSymbols[1][1], reelSymbols[2][2]);
+      // Diagonála 2
       totalMultiplier += checkLine(reelSymbols[0][2], reelSymbols[1][1], reelSymbols[2][0]);
 
       if (totalMultiplier > 0) {
@@ -369,8 +359,11 @@
         resultBox.style.color = 'red';
       }
 
+      // Autospin, ak ostali kredity
       if (autoSpin && credits >= betAmount) {
-        setTimeout(() => spin(), 700);
+        setTimeout(() => {
+          spin();
+        }, 700);
       } else {
         if (credits < betAmount) {
           autoSpin = false;
@@ -390,8 +383,61 @@
 
       if (distinctNonWild.size <= 1) {
         let rowMultiplier = 2;
+        // Každý "Wild" navyšuje ×2
         const wildCount = [s1, s2, s3].filter(x => x === 'Wild').length;
         rowMultiplier *= Math.pow(2, wildCount);
 
         el1.classList.add('highlight');
-        el2.classList.add('
+        el2.classList.add('highlight');
+        el3.classList.add('highlight');
+        return rowMultiplier;
+      }
+      return 0;
+    }
+
+    function getSymbolText(el) {
+      const span = el.querySelector('.wildSymbol');
+      if (span) return 'Wild';
+      return el.textContent.trim();
+    }
+
+    function removeAllHighlights() {
+      reels.forEach((reel) => {
+        reel.querySelectorAll('.symbol').forEach(sym => {
+          sym.classList.remove('highlight');
+        });
+      });
+    }
+
+    function increaseBet() {
+      betAmount += 10;
+      updateDisplays();
+    }
+
+    function decreaseBet() {
+      if (betAmount > 10) {
+        betAmount -= 10;
+        updateDisplays();
+      }
+    }
+
+    function updateDisplays() {
+      creditsBox.textContent = `Kredit: ${credits}`;
+    }
+
+    function toggleAutospin() {
+      autoSpin = !autoSpin;
+      if (autoSpin) {
+        autoBtn.classList.add('active');
+        if (credits >= betAmount) spin();
+        else {
+          autoSpin = false;
+          autoBtn.classList.remove('active');
+        }
+      } else {
+        autoBtn.classList.remove('active');
+      }
+    }
+  </script>
+</body>
+</html>
