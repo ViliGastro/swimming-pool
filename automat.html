@@ -2,14 +2,16 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Čejs 27 – Plynulé Automaty</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Čejs 27 – Automaty s pozadím</title>
   <style>
     body {
       margin: 0;
       padding: 0;
+      /* Nastavenie obrázka na pozadie */
       background: url('backgroundhell.jpg') no-repeat center center fixed;
       background-size: cover;
+
       font-family: Arial, sans-serif;
       color: #fff;
       text-align: center;
@@ -22,19 +24,23 @@
       background: rgba(0, 0, 0, 0.8);
       border-radius: 15px;
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      position: relative;
     }
 
     h1 {
       color: #FFD700;
       font-size: 3em;
-      text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500, 0 0 30px #FF8C00;
+      text-shadow:
+        0 0 10px #FFD700,
+        0 0 20px #FFA500,
+        0 0 30px #FF8C00;
       margin-bottom: 20px;
     }
 
     .slot-machine {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 2px;
       justify-content: center;
       margin: 20px 0;
     }
@@ -43,8 +49,8 @@
       width: 100px;
       height: 300px;
       overflow: hidden;
-      background-color: #333;
-      border: 3px solid #555;
+      background-color: #111;
+      border: 3px solid #333;
       border-radius: 10px;
       box-shadow: inset 0 0 15px black;
       position: relative;
@@ -67,8 +73,23 @@
       font-size: 40px;
       color: white;
       text-shadow: 0 0 10px black;
-      border-bottom: 1px solid #aaa;
+      transition: background-color 0.3s;
+      border: 1px solid #aaa;
       box-sizing: border-box;
+    }
+
+    .wildSymbol {
+      font-family: "Brush Script MT", cursive;
+      font-size: 28px;
+      color: #FF69B4;
+      text-shadow:
+        0 0 5px #ff69b4,
+        0 0 10px #ff1493;
+      font-weight: bold;
+    }
+
+    .symbol.highlight {
+      background-color: rgba(255, 255, 0, 0.3);
     }
 
     .controls {
@@ -79,9 +100,28 @@
       gap: 20px;
     }
 
-    .button {
-      padding: 10px 30px;
+    .bet-button {
       font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #ffb300;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      box-shadow: 0 0 10px rgba(255, 179, 0, 0.7);
+      transition: 0.3s;
+    }
+
+    .bet-button:hover {
+      background-color: #ff8400;
+      box-shadow: 0 0 15px rgba(255, 132, 0, 0.9);
+    }
+
+    .spin-button {
+      font-size: 48px;
+      padding: 20px 50px;
       font-weight: bold;
       color: #fff;
       background-color: #ffb300;
@@ -92,20 +132,73 @@
       transition: 0.3s;
     }
 
-    .button:hover {
+    .spin-button:hover {
       background-color: #ff8400;
       box-shadow: 0 0 15px rgba(255, 132, 0, 0.9);
     }
 
+    .auto-button {
+      font-size: 24px;
+      padding: 14px 25px;
+      color: #fff;
+      background-color: #999;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(150, 150, 150, 0.5);
+      transition: 0.3s;
+    }
+
+    .auto-button:hover {
+      background-color: #666;
+      box-shadow: 0 0 15px rgba(100, 100, 100, 0.9);
+    }
+
+    .auto-button.active {
+      background-color: #00cc66;
+      box-shadow: 0 0 15px #00cc66;
+    }
+
     .bottom-info {
-      margin-top: 20px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      margin-top: 40px;
+      position: relative;
+    }
+
+    .credits-box {
+      justify-self: start;
+      border: 1px solid #000;
+      background-color: rgba(0,0,0,0.3);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 20px;
+    }
+
+    .result-box {
+      justify-self: center;
+      border: 1px solid #000;
+      background-color: rgba(0,0,0,0.3);
+      padding: 8px 15px;
+      border-radius: 5px;
+      font-size: 28px;
+      min-width: 220px;
+    }
+
+    .bet-box {
+      justify-self: end;
+      border: 1px solid #000;
+      background-color: rgba(0,0,0,0.3);
+      padding: 5px 10px;
+      border-radius: 5px;
       font-size: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Čejs 27 – Automaty</h1>
+    <h1>Čejs 27</h1>
 
     <div class="slot-machine">
       <div class="reel" id="reel1">
@@ -120,60 +213,17 @@
     </div>
 
     <div class="controls">
-      <button class="button" onclick="spin()">TOČIŤ</button>
+      <button class="bet-button" onclick="decreaseBet()">-</button>
+      <button class="spin-button" onclick="spin()">TOČIŤ</button>
+      <button class="auto-button" id="autoBtn" onclick="toggleAutospin()">AUTO</button>
+      <button class="bet-button" onclick="increaseBet()">+</button>
     </div>
 
     <div class="bottom-info">
-      <p>Kredit: <span id="credits">100</span></p>
+      <div class="credits-box" id="creditsBox">Kredit: 200</div>
+      <div class="result-box" id="resultBox">Pripravený...</div>
+      <div class="bet-box" id="betBox">Stávka: 10</div>
     </div>
   </div>
-
-  <script>
-    let credits = 100;
-    const allSymbols = ["🍒", "🍋", "🍇", "🍉", "⭐", "Wild"];
-    const reels = document.querySelectorAll('.reel .symbols');
-
-    // Funkcia na generovanie náhodných symbolov
-    function generateRandomSymbols(reel) {
-      reel.innerHTML = ''; // Vymažeme existujúce symboly
-      for (let i = 0; i < 9; i++) {
-        const randomSymbol = allSymbols[Math.floor(Math.random() * allSymbols.length)];
-        const symbolDiv = document.createElement('div');
-        symbolDiv.classList.add('symbol');
-        symbolDiv.textContent = randomSymbol;
-        reel.appendChild(symbolDiv);
-      }
-    }
-
-    // Inicializácia valcov pri načítaní stránky
-    window.onload = () => {
-      reels.forEach((reel) => {
-        generateRandomSymbols(reel);
-      });
-    };
-
-    function spin() {
-      if (credits < 10) {
-        alert('Nemáte dostatok kreditov!');
-        return;
-      }
-
-      credits -= 10;
-      document.getElementById('credits').textContent = credits;
-
-      reels.forEach((reel) => {
-        const symbolsContainer = reel.parentElement.querySelector('.symbols');
-        symbolsContainer.style.transition = 'transform 1s ease';
-        symbolsContainer.style.transform = 'translateY(-200px)';
-
-        // Po otočení generujeme nové symboly a resetujeme pozíciu
-        setTimeout(() => {
-          generateRandomSymbols(symbolsContainer);
-          symbolsContainer.style.transition = 'none';
-          symbolsContainer.style.transform = 'translateY(0px)';
-        }, 1000);
-      });
-    }
-  </script>
 </body>
-</html>
+</html>)
